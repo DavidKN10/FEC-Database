@@ -9,36 +9,42 @@ def open_election_window():
     election_window.title("Election Table")
     election_window.geometry("500x500")
     Label(election_window, text="testing").pack()
+    election_window.grab_set()
 
 def open_committee_window():
-    election_window = Toplevel(window)
-    election_window.title("Committee Table")
-    election_window.geometry("500x500")
-    Label(election_window, text="testing").pack()
+    committee_window = Toplevel(window)
+    committee_window.title("Committee Table")
+    committee_window.geometry("500x500")
+    Label(committee_window, text="testing").pack()
+    committee_window.grab_set()
 
 def open_candidate_window():
-    election_window = Toplevel(window)
-    election_window.title("Candidate Table")
-    election_window.geometry("500x500")
-    Label(election_window, text="testing").pack()
+    candidate_window = Toplevel(window)
+    candidate_window.title("Candidate Table")
+    candidate_window.geometry("500x500")
+    Label(candidate_window, text="testing").pack()
+    candidate_window.grab_set()
 
 def open_contribution_window():
-    election_window = Toplevel(window)
-    election_window.title("Contribution Table")
-    election_window.geometry("500x500")
-    Label(election_window, text="testing").pack()
+    contribution_window = Toplevel(window)
+    contribution_window.title("Contribution Table")
+    contribution_window.geometry("500x500")
+    Label(contribution_window, text="testing").pack()
+    contribution_window.grab_set()
 
 def open_expenditure_window():
-    election_window = Toplevel(window)
-    election_window.title("Expenditure Table")
-    election_window.geometry("500x500")
-    Label(election_window, text="testing").pack()
+    expenditure_window = Toplevel(window)
+    expenditure_window.title("Expenditure Table")
+    expenditure_window.geometry("500x500")
+    Label(expenditure_window, text="testing").pack()
+    expenditure_window.grab_set()
 
 def open_filing_window():
-    election_window = Toplevel(window)
-    election_window.title("Filing Table")
-    election_window.geometry("500x500")
-    Label(election_window, text="testing").pack()
+    filing_window = Toplevel(window)
+    filing_window.title("Filing Table")
+    filing_window.geometry("500x500")
+    Label(filing_window, text="testing").pack()
+    filing_window.grab_set()
 
 def exit_program():
     return
