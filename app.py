@@ -4,12 +4,36 @@ from tkinter.ttk import Combobox
 import mysql.connector
 
 
+# ==================== Table Windows ====================
 def open_election_window():
     election_window = Toplevel(window)
     election_window.title("Election Table")
     election_window.geometry("900x500")
-    Label(election_window, text="testing").pack()
+    Label(election_window,font=("", 20, "bold"), text="Election").pack()
     election_window.grab_set()
+
+    # ==================== Actions Frame ====================
+    ActionFrame = Frame(election_window)
+    ActionFrame.place(x=600, y=50, height=500, width=500)
+    actionFrame = LabelFrame(ActionFrame, font=("", 15, "bold"), text="Select an action")
+    actionFrame.grid(row=0, column=0)
+
+    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1)
+    insert_button.grid(row=1, column=0)
+
+    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1)
+    update_button.grid(row=2, column=0)
+
+    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1)
+    delete_button.grid(row=3, column=0)
+
+
+    # ==================== Table Info Frame ====================
+    InfoFrame = Frame(election_window)
+    InfoFrame.place(x=0, y=50, height=500, width=500)
+    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Election Info")
+    infoFrame.grid(row=0, column=0)
+
 
 def open_committee_window():
     committee_window = Toplevel(window)
@@ -89,7 +113,7 @@ ExitFrame.place(x=0, y=550, width=1280, height=400)
 exitFrame = LabelFrame(ExitFrame)
 exitFrame.grid(row=0, column=0)
 
-exit_button = Button(exitFrame, text="Exit", font=("", 20), command=exit_program)
+exit_button = Button(exitFrame, text="Exit", font=("", 20), command=exit_program, width=10)
 exit_button.grid(row=1, column=0)
 
 
