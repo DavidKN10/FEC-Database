@@ -4,7 +4,9 @@ from tkinter.ttk import Combobox
 import mysql.connector
 
 
-# ==================== Table Windows ====================
+# ======================================== Table Windows ========================================
+
+# ==================== Election Window ====================
 def open_election_window():
     election_window = Toplevel(window)
     election_window.title("Election Table")
@@ -18,13 +20,16 @@ def open_election_window():
     actionFrame = LabelFrame(ActionFrame, font=("", 15, "bold"), text="Select an action")
     actionFrame.grid(row=0, column=0)
 
-    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1)
+    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1
+                           ,command=election_insert_window)
     insert_button.grid(row=1, column=0)
 
-    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1)
+    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1,
+                           command=election_update_window)
     update_button.grid(row=2, column=0)
 
-    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1)
+    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1,
+                           command=election_delete_window)
     delete_button.grid(row=3, column=0)
 
 
@@ -35,6 +40,32 @@ def open_election_window():
     infoFrame.grid(row=0, column=0)
 
 
+# ==================== Button Windows ====================
+def election_insert_window():
+    insert_window = Toplevel(window)
+    insert_window.title("Election Insert")
+    insert_window.geometry("700x400")
+    Label(insert_window, font=("", 15, "bold"), text="Insert Election").pack()
+    insert_window.grab_set()
+
+
+def election_update_window():
+    update_window = Toplevel(window)
+    update_window.title("Election Update")
+    update_window.geometry("700x400")
+    Label(update_window, font=("", 15, "bold"), text="Update Election").pack()
+    update_window.grab_set()
+
+
+def election_delete_window():
+    delete_window = Toplevel(window)
+    delete_window.title("Election Delete")
+    delete_window.geometry("700x400")
+    Label(delete_window, font=("", 15, "bold"), text="Delete Election").pack()
+    delete_window.grab_set()
+
+
+# ==================== Committee Window ====================
 def open_committee_window():
     committee_window = Toplevel(window)
     committee_window.title("Committee Table")
@@ -48,13 +79,16 @@ def open_committee_window():
     actionFrame = LabelFrame(ActionFrame, font=("", 15, "bold"), text="Select an action")
     actionFrame.grid(row=0, column=0)
 
-    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1)
+    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1,
+                           command=committee_insert_window)
     insert_button.grid(row=1, column=0)
 
-    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1)
+    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1,
+                           command=committee_update_window)
     update_button.grid(row=2, column=0)
 
-    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1)
+    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1,
+                           command=committee_delete_window)
     delete_button.grid(row=3, column=0)
     # ==================== Table Info Frame ====================
     InfoFrame = Frame(committee_window)
@@ -63,6 +97,32 @@ def open_committee_window():
     infoFrame.grid(row=0, column=0)
 
 
+# ==================== Button Windows ====================
+def committee_insert_window():
+    insert_window = Toplevel(window)
+    insert_window.title("Committee Insert")
+    insert_window.geometry("700x400")
+    Label(insert_window, font=("", 15, "bold"), text="Insert Committee").pack()
+    insert_window.grab_set()
+
+
+def committee_update_window():
+    update_window = Toplevel(window)
+    update_window.title("Committee Update")
+    update_window.geometry("700x400")
+    Label(update_window, font=("", 15, "bold"), text="Update Committee").pack()
+    update_window.grab_set()
+
+
+def committee_delete_window():
+    delete_window = Toplevel(window)
+    delete_window.title("Committee Delete")
+    delete_window.geometry("700x400")
+    Label(delete_window, font=("", 15, "bold"), text="Delete Committee").pack()
+    delete_window.grab_set()
+
+
+# ==================== Candidate Window ====================
 def open_candidate_window():
     candidate_window = Toplevel(window)
     candidate_window.title("Candidate Table")
@@ -76,13 +136,16 @@ def open_candidate_window():
     actionFrame = LabelFrame(ActionFrame, font=("", 15, "bold"), text="Select an action")
     actionFrame.grid(row=0, column=0)
 
-    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1)
+    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1,
+                           command=candidate_insert_window)
     insert_button.grid(row=1, column=0)
 
-    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1)
+    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1,
+                           command=candidate_update_window)
     update_button.grid(row=2, column=0)
 
-    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1)
+    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1,
+                           command=candidate_delete_window)
     delete_button.grid(row=3, column=0)
 
     # ==================== Table Info Frame ====================
@@ -92,6 +155,32 @@ def open_candidate_window():
     infoFrame.grid(row=0, column=0)
 
 
+# ==================== Button Windows ====================
+def candidate_insert_window():
+    insert_window = Toplevel(window)
+    insert_window.title("Candidate Insert")
+    insert_window.geometry("700x400")
+    Label(insert_window, font=("", 20, "bold"), text="Insert Candidate").pack()
+    insert_window.grab_set()
+
+
+def candidate_update_window():
+    update_window = Toplevel(window)
+    update_window.title("Candidate Update")
+    update_window.geometry("700x400")
+    Label(update_window, font=("", 20, "bold"), text="Update Candidate").pack()
+    update_window.grab_set()
+
+
+def candidate_delete_window():
+    delete_window = Toplevel(window)
+    delete_window.title("Candidate Delete")
+    delete_window.geometry("700x400")
+    Label(delete_window, font=("", 20, "bold"), text="Delete Candidate").pack()
+    delete_window.grab_set()
+
+
+# ==================== Contribution Window ====================
 def open_contribution_window():
     contribution_window = Toplevel(window)
     contribution_window.title("Contribution Table")
@@ -105,13 +194,16 @@ def open_contribution_window():
     actionFrame = LabelFrame(ActionFrame, font=("", 15, "bold"), text="Select an action")
     actionFrame.grid(row=0, column=0)
 
-    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1)
+    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1,
+                           command=contribution_insert_window)
     insert_button.grid(row=1, column=0)
 
-    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1)
+    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1,
+                           command=contribution_update_window)
     update_button.grid(row=2, column=0)
 
-    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1)
+    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1,
+                           command=contribution_delete_window)
     delete_button.grid(row=3, column=0)
 
     # ==================== Table Info Frame ====================
@@ -121,6 +213,32 @@ def open_contribution_window():
     infoFrame.grid(row=0, column=0)
 
 
+# ==================== Button Windows ====================
+def contribution_insert_window():
+    insert_window = Toplevel(window)
+    insert_window.title("Contribution Insert")
+    insert_window.geometry("700x400")
+    Label(insert_window, font=("", 20, "bold"), text="Insert Contribution").pack()
+    insert_window.grab_set()
+
+
+def contribution_update_window():
+    update_window = Toplevel(window)
+    update_window.title("Contribution Update")
+    update_window.geometry("700x400")
+    Label(update_window, font=("", 20, "bold"), text="Update Contribution").pack()
+    update_window.grab_set()
+
+
+def contribution_delete_window():
+    delete_window = Toplevel(window)
+    delete_window.title("Contribution Delete")
+    delete_window.geometry("700x400")
+    Label(delete_window, font=("", 20, "bold"), text="Delete Contribution").pack()
+    delete_window.grab_set()
+
+
+# ==================== Expenditure Window ====================
 def open_expenditure_window():
     expenditure_window = Toplevel(window)
     expenditure_window.title("Expenditure Table")
@@ -133,13 +251,16 @@ def open_expenditure_window():
     actionFrame = LabelFrame(ActionFrame, font=("", 15, "bold"), text="Select an action")
     actionFrame.grid(row=0, column=0)
 
-    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1)
+    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1,
+                           command=expenditure_insert_window)
     insert_button.grid(row=1, column=0)
 
-    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1)
+    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1,
+                           command=expenditure_update_window)
     update_button.grid(row=2, column=0)
 
-    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1)
+    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1,
+                           command=expenditure_delete_window)
     delete_button.grid(row=3, column=0)
 
     # ==================== Table Info Frame ====================
@@ -149,6 +270,32 @@ def open_expenditure_window():
     infoFrame.grid(row=0, column=0)
 
 
+# ==================== Button Windows ====================
+def expenditure_insert_window():
+    insert_window = Toplevel(window)
+    insert_window.title("Expenditure Insert")
+    insert_window.geometry("700x400")
+    Label(insert_window, font=("", 20, "bold"), text="Insert Expenditure").pack()
+    insert_window.grab_set()
+
+
+def expenditure_update_window():
+    update_window = Toplevel(window)
+    update_window.title("Expenditure Update")
+    update_window.geometry("700x400")
+    Label(update_window, font=("", 20, "bold"), text="Update Expenditure").pack()
+    update_window.grab_set()
+
+
+def expenditure_delete_window():
+    delete_window = Toplevel(window)
+    delete_window.title("Expenditure Delete")
+    delete_window.geometry("700x400")
+    Label(delete_window, font=("", 20, "bold"), text="Delete Expenditure").pack()
+    delete_window.grab_set()
+
+
+# ==================== Filing Window ====================
 def open_filing_window():
     filing_window = Toplevel(window)
     filing_window.title("Filing Table")
@@ -162,13 +309,16 @@ def open_filing_window():
     actionFrame = LabelFrame(ActionFrame, font=("", 15, "bold"), text="Select an action")
     actionFrame.grid(row=0, column=0)
 
-    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1)
+    insert_button = Button(actionFrame, text="Insert Data", font=("", 15), width=10, height=1,
+                           command=filing_insert_window)
     insert_button.grid(row=1, column=0)
 
-    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1)
+    update_button = Button(actionFrame, text="Update Data", font=("", 15), width=10, height=1,
+                           command=filing_update_window)
     update_button.grid(row=2, column=0)
 
-    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1)
+    delete_button = Button(actionFrame, text="Delete Data", font=("", 15), width=10, height=1,
+                           command=filing_delete_window)
     delete_button.grid(row=3, column=0)
 
     # ==================== Table Info Frame ====================
@@ -176,6 +326,31 @@ def open_filing_window():
     InfoFrame.place(x=0, y=50, height=500, width=500)
     infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Filing Info")
     infoFrame.grid(row=0, column=0)
+
+
+# ==================== Button Windows ====================
+def filing_insert_window():
+    insert_window = Toplevel(window)
+    insert_window.title("Filing Insert")
+    insert_window.geometry("700x400")
+    Label(insert_window, font=("", 20, "bold"), text="Insert Filing").pack()
+    insert_window.grab_set()
+
+
+def filing_update_window():
+    update_window = Toplevel(window)
+    update_window.title("Filing Update")
+    update_window.geometry("700x400")
+    Label(update_window, font=("", 20, "bold"), text="Update Filing").pack()
+    update_window.grab_set()
+
+
+def filing_delete_window():
+    delete_window = Toplevel(window)
+    delete_window.title("Filing Delete")
+    delete_window.geometry("700x400")
+    Label(delete_window, font=("", 20, "bold"), text="Delete Filing").pack()
+    delete_window.grab_set()
 
 
 def exit_program():
