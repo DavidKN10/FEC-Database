@@ -350,6 +350,56 @@ def candidate_insert_window():
     insert_window.title("Candidate Insert")
     insert_window.geometry("700x400")
     Label(insert_window, font=("", 20, "bold"), text="Insert Candidate").pack()
+
+    InfoFrame = Frame(insert_window)
+    InfoFrame.place(x=0, y=50, height=500, width=500)
+    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+    infoFrame.grid(row=0, column=0)
+
+    candidate_ID_label = Label(infoFrame, font=("", 15), text="Enter Candidate ID", height=1)
+    candidate_ID_label.grid(row=1, column=0)
+    candidate_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    candidate_ID_entry.grid(row=1, column=1)
+
+    candidate_name_label = Label(infoFrame, font=("", 15), text="Enter Candidate Name", height=1)
+    candidate_name_label.grid(row=2, column=0)
+    candidate_name_entry = Entry(infoFrame, font=("", 15), width=18)
+    candidate_name_entry.grid(row=2, column=1)
+
+    party_affiliation_label = Label(infoFrame, font=("", 15), text="Enter Party Affiliation", height=1)
+    party_affiliation_label.grid(row=3, column=0)
+    party_affiliation_entry = Entry(infoFrame, font=("", 15), width=18)
+    party_affiliation_entry.grid(row=3, column=1)
+
+    office_label = Label(infoFrame, font=("", 15), text="Enter Office", height=1)
+    office_label.grid(row=4, column=0)
+    office_entry = Entry(infoFrame, font=("", 15), width=18)
+    office_entry.grid(row=4, column=1)
+
+    state_label = Label(infoFrame, font=("", 15), text="Enter State", height=1)
+    state_label.grid(row=5, column=0)
+    state_entry = Entry(infoFrame, font=("", 15), width=18)
+    state_entry.grid(row=5, column=1)
+
+    committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
+    committee_ID_label.grid(row=6, column=0)
+    committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    committee_ID_entry.grid(row=6, column=1)
+
+    election_ID_label = Label(infoFrame, font=("", 15), text="Enter Election ID", height=1)
+    election_ID_label.grid(row=7, column=0)
+    election_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    election_ID_entry.grid(row=7, column=1)
+
+
+    SubmitFrame = Frame(insert_window)
+    SubmitFrame.place(x=0, y=300, height=250, width=250)
+    submitFrame = LabelFrame(InfoFrame)
+    submitFrame.grid(row=0, column=0)
+
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button.grid(row=1, column=0)
+
     insert_window.grab_set()
 
 
@@ -358,14 +408,84 @@ def candidate_update_window():
     update_window.title("Candidate Update")
     update_window.geometry("700x400")
     Label(update_window, font=("", 20, "bold"), text="Update Candidate").pack()
+
+    InfoFrame = Frame(update_window)
+    InfoFrame.place(x=0, y=50, height=500, width=500)
+    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+    infoFrame.grid(row=0, column=0)
+
+    candidate_ID_label = Label(infoFrame, font=("", 15), text="Enter Candidate ID", height=1)
+    candidate_ID_label.grid(row=1, column=0)
+    candidate_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    candidate_ID_entry.grid(row=1, column=1)
+
+    candidate_name_label = Label(infoFrame, font=("", 15), text="Enter Candidate Name", height=1)
+    candidate_name_label.grid(row=2, column=0)
+    candidate_name_entry = Entry(infoFrame, font=("", 15), width=18)
+    candidate_name_entry.grid(row=2, column=1)
+
+    party_affiliation_label = Label(infoFrame, font=("", 15), text="Enter Party Affiliation", height=1)
+    party_affiliation_label.grid(row=3, column=0)
+    party_affiliation_entry = Entry(infoFrame, font=("", 15), width=18)
+    party_affiliation_entry.grid(row=3, column=1)
+
+    office_label = Label(infoFrame, font=("", 15), text="Enter Office", height=1)
+    office_label.grid(row=4, column=0)
+    office_entry = Entry(infoFrame, font=("", 15), width=18)
+    office_entry.grid(row=4, column=1)
+
+    state_label = Label(infoFrame, font=("", 15), text="Enter State", height=1)
+    state_label.grid(row=5, column=0)
+    state_entry = Entry(infoFrame, font=("", 15), width=18)
+    state_entry.grid(row=5, column=1)
+
+    committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
+    committee_ID_label.grid(row=6, column=0)
+    committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    committee_ID_entry.grid(row=6, column=1)
+
+    election_ID_label = Label(infoFrame, font=("", 15), text="Enter Election ID", height=1)
+    election_ID_label.grid(row=7, column=0)
+    election_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    election_ID_entry.grid(row=7, column=1)
+
+
+    SubmitFrame = Frame(update_window)
+    SubmitFrame.place(x=0, y=300, height=250, width=250)
+    submitFrame = LabelFrame(InfoFrame)
+    submitFrame.grid(row=0, column=0)
+
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button.grid(row=1, column=0)
+
     update_window.grab_set()
 
 
 def candidate_delete_window():
     delete_window = Toplevel(window)
     delete_window.title("Candidate Delete")
-    delete_window.geometry("700x400")
+    delete_window.geometry("400x300")
     Label(delete_window, font=("", 20, "bold"), text="Delete Candidate").pack()
+
+    InfoFrame = Frame(delete_window)
+    InfoFrame.place(x=0, y=50, height=500, width=500)
+    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+    infoFrame.grid(row=0, column=0)
+
+    election_ID_label = Label(infoFrame, font=("", 15), text="Enter Candidate ID", height=1)
+    election_ID_label.grid(row=1, column=0)
+    election_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    election_ID_entry.grid(row=1, column=1)
+
+
+    SubmitFrame = Frame(delete_window)
+    SubmitFrame.place(x=0, y=150, height=250, width=250)
+    submitFrame = LabelFrame(InfoFrame)
+    submitFrame.grid(row=0, column=0)
+
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button.grid(row=1, column=0)
+
     delete_window.grab_set()
 
 
@@ -406,8 +526,48 @@ def open_contribution_window():
 def contribution_insert_window():
     insert_window = Toplevel(window)
     insert_window.title("Contribution Insert")
-    insert_window.geometry("700x400")
+    insert_window.geometry("500x400")
     Label(insert_window, font=("", 20, "bold"), text="Insert Contribution").pack()
+
+    InfoFrame = Frame(insert_window)
+    InfoFrame.place(x=0, y=50, height=500, width=500)
+    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"))
+    infoFrame.grid(row=0, column=0)
+
+    contribution_ID_label = Label(infoFrame, font=("", 15), text="Enter Contribution ID", height=1)
+    contribution_ID_label.grid(row=1, column=0)
+    contribution_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    contribution_ID_entry.grid(row=1, column=1)
+
+    donor_name_label = Label(infoFrame, font=("", 15), text="Enter Donor Name", height=1)
+    donor_name_label.grid(row=2, column=0)
+    donor_name_entry = Entry(infoFrame, font=("", 15), width=18)
+    donor_name_entry.grid(row=2, column=1)
+
+    committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
+    committee_ID_label.grid(row=3, column=0)
+    committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    committee_ID_entry.grid(row=3, column=1)
+
+    amount_label = Label(infoFrame, font=("", 15), text="Enter Amount", height=1)
+    amount_label.grid(row=4, column=0)
+    amount_entry = Entry(infoFrame, font=("", 15), width=18)
+    amount_entry.grid(row=4, column=1)
+
+    date_label = Label(infoFrame, font=("", 15), text="Enter Date", height=1)
+    date_label.grid(row=5, column=0)
+    date_entry = Entry(infoFrame, font=("", 15), width=18)
+    date_entry.grid(row=5, column=1)
+
+
+    SubmitFrame = Frame(insert_window)
+    SubmitFrame.place(x=0, y=300, height=250, width=250)
+    submitFrame = LabelFrame(InfoFrame)
+    submitFrame.grid(row=0, column=0)
+
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button.grid(row=1, column=0)
+
     insert_window.grab_set()
 
 
@@ -416,14 +576,75 @@ def contribution_update_window():
     update_window.title("Contribution Update")
     update_window.geometry("700x400")
     Label(update_window, font=("", 20, "bold"), text="Update Contribution").pack()
+
+    InfoFrame = Frame(update_window)
+    InfoFrame.place(x=0, y=50, height=500, width=500)
+    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"))
+    infoFrame.grid(row=0, column=0)
+
+    contribution_ID_label = Label(infoFrame, font=("", 15), text="Enter Contribution ID", height=1)
+    contribution_ID_label.grid(row=1, column=0)
+    contribution_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    contribution_ID_entry.grid(row=1, column=1)
+
+    donor_name_label = Label(infoFrame, font=("", 15), text="Enter Donor Name", height=1)
+    donor_name_label.grid(row=2, column=0)
+    donor_name_entry = Entry(infoFrame, font=("", 15), width=18)
+    donor_name_entry.grid(row=2, column=1)
+
+    committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
+    committee_ID_label.grid(row=3, column=0)
+    committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    committee_ID_entry.grid(row=3, column=1)
+
+    amount_label = Label(infoFrame, font=("", 15), text="Enter Amount", height=1)
+    amount_label.grid(row=4, column=0)
+    amount_entry = Entry(infoFrame, font=("", 15), width=18)
+    amount_entry.grid(row=4, column=1)
+
+    date_label = Label(infoFrame, font=("", 15), text="Enter Date", height=1)
+    date_label.grid(row=5, column=0)
+    date_entry = Entry(infoFrame, font=("", 15), width=18)
+    date_entry.grid(row=5, column=1)
+
+
+    SubmitFrame = Frame(update_window)
+    SubmitFrame.place(x=0, y=300, height=250, width=250)
+    submitFrame = LabelFrame(InfoFrame)
+    submitFrame.grid(row=0, column=0)
+
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button.grid(row=1, column=0)
+
     update_window.grab_set()
 
 
 def contribution_delete_window():
     delete_window = Toplevel(window)
     delete_window.title("Contribution Delete")
-    delete_window.geometry("700x400")
+    delete_window.geometry("400x300")
     Label(delete_window, font=("", 20, "bold"), text="Delete Contribution").pack()
+
+    InfoFrame = Frame(delete_window)
+    InfoFrame.place(x=0, y=50, height=500, width=500)
+    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+    infoFrame.grid(row=0, column=0)
+
+    contribution_ID_label = Label(infoFrame, font=("", 15), text="Enter Contribution ID", height=1)
+    contribution_ID_label.grid(row=1, column=0)
+    contribution_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    contribution_ID_entry.grid(row=1, column=1)
+
+
+    SubmitFrame = Frame(delete_window)
+    SubmitFrame.place(x=0, y=150, height=250, width=250)
+    submitFrame = LabelFrame(InfoFrame)
+    submitFrame.grid(row=0, column=0)
+
+
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button.grid(row=1, column=0)
+
     delete_window.grab_set()
 
 
