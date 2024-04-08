@@ -5,7 +5,14 @@ import mysql.connector
 
 
 # ======================================== Table Windows ========================================
+connection = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    passwd="password",
+    database="database name"
+)
 
+cursor = connection.cursor()
 # ==================== Election Window ====================
 def open_election_window():
     election_window = Toplevel(window)
@@ -42,6 +49,16 @@ def open_election_window():
 
 # ==================== Button Windows ====================
 def election_insert_window():
+    def submit_query():
+        insert_query = "INSERT INTO Election (ElectionID, ElectionName, Date, State) VALUES (%s, %s, %s, %s)"
+        election_data = (election_ID_entry.get(), election_name_entry.get(),
+                         election_date_entry.get(), election_state_entry.get())
+        cursor.execute(insert_query, election_data)
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Inserted Successfully")
+
+
     insert_window = Toplevel(window)
     insert_window.title("Election Insert")
     insert_window.geometry("500x400")
@@ -78,13 +95,23 @@ def election_insert_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     insert_window.grab_set()
 
 
+
 def election_update_window():
+    def submit_query():
+        update_query = "UPDATE Election SET ElectionName=%s, Date=%s, State=%s WHERE ElectionID=%s"
+        cursor.execute(update_query, (election_name_entry.get(), election_date_entry.get(),
+                         election_state_entry.get(), election_ID_entry.get()))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Updated Successfully")
+
+
     update_window = Toplevel(window)
     update_window.title("Election Update")
     update_window.geometry("500x400")
@@ -120,13 +147,29 @@ def election_update_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     update_window.grab_set()
 
 
 def election_delete_window():
+    def submit_query():
+        electionID = election_ID_entry.get()
+        delete_dependent_rows(electionID)
+        delete_query = "DELETE FROM Election WHERE ElectionID=%s"
+
+        cursor.execute(delete_query, (electionID,))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Deleted Successfully")
+
+    def delete_dependent_rows(electionID):
+        delete_query = "DELETE FROM candidate WHERE ElectionID=%s"
+        cursor.execute(delete_query, (electionID,))
+        connection.commit()
+
+
     delete_window = Toplevel(window)
     delete_window.title("Election Delete")
     delete_window.geometry("400x300")
@@ -148,7 +191,7 @@ def election_delete_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     delete_window.grab_set()
@@ -975,6 +1018,7 @@ def exit_program():
     window.destroy()
 
 
+# ======================================== Main Window ========================================
 window = Tk()
 window.title("FEC Database")
 window.geometry("1280x720+0+0")
