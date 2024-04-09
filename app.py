@@ -832,6 +832,16 @@ def open_expenditure_window():
 
 # ==================== Button Windows ====================
 def expenditure_insert_window():
+    def submit_query():
+        insert_query = "INSERT INTO Expenditure (ExpenditureID, Payee, CommitteeID, Amount, Purpose, Date) VALUES (%s, %s, %s, %s, %s, %s)"
+        expenditure_data = (expenditure_ID_entry.get(), payee_entry.get(), committee_ID_entry.get(),
+                            amount_entry.get(), purpose_entry.get(), date_entry.get())
+        cursor.execute(insert_query, expenditure_data)
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Inserted Successfully")
+
+
     insert_window = Toplevel(window)
     insert_window.title("Expenditure Insert")
     insert_window.geometry("500x400")
@@ -878,13 +888,29 @@ def expenditure_insert_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     insert_window.grab_set()
 
 
 def expenditure_update_window():
+    def submit_query():
+        update_query = """
+        UPDATE Expenditure
+        SET Payee = %s, 
+            CommitteeID = %s, 
+            Amount = %s,
+            Purpose = %s,
+            Date = %s
+        WHERE ExpenditureID = %s;
+    """
+        cursor.execute(update_query, (payee_entry.get(), committee_ID_entry.get(), amount_entry.get(),
+                                      payee_entry.get(), date_entry.get(), expenditure_ID_entry.get()))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Updated Successfully")
+
     update_window = Toplevel(window)
     update_window.title("Expenditure Update")
     update_window.geometry("500x400")
@@ -931,7 +957,7 @@ def expenditure_update_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
 
@@ -939,6 +965,15 @@ def expenditure_update_window():
 
 
 def expenditure_delete_window():
+    def submit_query():
+        expenditureID = expenditure_ID_entry.get()
+        delete_query = "DELETE FROM Expenditure WHERE ExpenditureID = %s;"
+        cursor.execute(delete_query, (expenditureID,))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Deleted Successfully")
+
+
     delete_window = Toplevel(window)
     delete_window.title("Expenditure Delete")
     delete_window.geometry("400x300")
@@ -951,8 +986,8 @@ def expenditure_delete_window():
 
     expenditure_ID_label = Label(infoFrame, font=("", 15), text="Enter Expenditure ID", height=1)
     expenditure_ID_label.grid(row=1, column=0)
-    expenditure_id_entry = Entry(infoFrame, font=("", 15), width=18)
-    expenditure_id_entry.grid(row=1, column=1)
+    expenditure_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    expenditure_ID_entry.grid(row=1, column=1)
 
 
     SubmitFrame = Frame(delete_window)
@@ -960,7 +995,7 @@ def expenditure_delete_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     delete_window.grab_set()
@@ -1001,6 +1036,16 @@ def open_filing_window():
 
 # ==================== Button Windows ====================
 def filing_insert_window():
+    def submit_query():
+        insert_query = "INSERT INTO Filing (FilingID, ReportType, ReportPeriod, DateFiled, CommitteeID) VALUES (%s, %s, %s, %s, %s)"
+        filing_data = (filing_ID_entry.get(), report_type_entry.get(), report_period_entry.get(),
+                       date_filed_entry.get(), committee_ID_entry.get())
+        cursor.execute(insert_query, filing_data)
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Inserted Successfully")
+
+
     insert_window = Toplevel(window)
     insert_window.title("Filing Insert")
     insert_window.geometry("500x400")
@@ -1041,13 +1086,29 @@ def filing_insert_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     insert_window.grab_set()
 
 
 def filing_update_window():
+    def submit_query():
+        update_query = """
+                UPDATE Filing
+                SET ReportType = %s, 
+                    ReportPeriod = %s, 
+                    DateFiled = %s,
+                    CommitteeID = %s
+                WHERE FilingID = %s;
+        """
+        cursor.execute(update_query, (report_type_entry.get(), report_period_entry.get(), date_filed_entry.get(),
+                                      committee_ID_entry.get(), filing_ID_entry.get()))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Updated Successfully")
+
+
     update_window = Toplevel(window)
     update_window.title("Filing Update")
     update_window.geometry("500x400")
@@ -1089,13 +1150,22 @@ def filing_update_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     update_window.grab_set()
 
 
 def filing_delete_window():
+    def submit_query():
+        filingID = filing_ID_entry.get()
+        delete_query = "DELETE FROM Filing WHERE FilingID = %s;"
+        cursor.execute(delete_query, (filingID,))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Deleted Successfully")
+
+
     delete_window = Toplevel(window)
     delete_window.title("Filing Delete")
     delete_window.geometry("400x300")
@@ -1116,7 +1186,7 @@ def filing_delete_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     delete_window.grab_set()
