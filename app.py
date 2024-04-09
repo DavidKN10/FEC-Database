@@ -8,8 +8,8 @@ import mysql.connector
 connection = mysql.connector.connect(
     host="localhost",
     user="root",
-    passwd="password",
-    database="database name"
+    passwd="gd498bj45obo8432",
+    database="fec_schema"
 )
 
 cursor = connection.cursor()
@@ -425,6 +425,16 @@ def open_candidate_window():
 
 # ==================== Button Windows ====================
 def candidate_insert_window():
+    def submit_query():
+        insert_query = "INSERT INTO Candidate (CandidateID, CandidateName, PartyAffiliation, Office, State, CommitteeID, ElectionID) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        candidate_data = (candidate_ID_entry.get(), candidate_name_entry.get(), party_affiliation_entry.get(),
+                          office_entry.get(), state_entry.get(), committee_ID_entry.get(), election_ID_entry.get())
+        cursor.execute(insert_query, candidate_data)
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Inserted Successfully")
+
+
     insert_window = Toplevel(window)
     insert_window.title("Candidate Insert")
     insert_window.geometry("500x400")
@@ -476,13 +486,30 @@ def candidate_insert_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     insert_window.grab_set()
 
 
 def candidate_update_window():
+    def submit_query():
+        update_query = """
+        UPDATE Candidate
+        SET CandidateName = %s, 
+            PartyAffiliation = %s, 
+            Office = %s,
+            State = %s,
+            CommitteeID = %s,
+            ElectionID = %s
+        WHERE CandidateID = %s;
+    """
+        cursor.execute(update_query, (candidate_name_entry.get(), party_affiliation_entry.get(), office_entry.get(),
+                                      state_entry.get(), committee_ID_entry.get(), election_ID_entry.get(), candidate_ID_entry.get()))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Updated Successfully")
+
     update_window = Toplevel(window)
     update_window.title("Candidate Update")
     update_window.geometry("500x400")
@@ -534,13 +561,22 @@ def candidate_update_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     update_window.grab_set()
 
 
 def candidate_delete_window():
+    def submit_query():
+        candidateID = candidate_ID_entry.get()
+        delete_query = "DELETE FROM Candidate WHERE CandidateID=%s;"
+
+        cursor.execute(delete_query, (candidateID,))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Deleted Successfully")
+
     delete_window = Toplevel(window)
     delete_window.title("Candidate Delete")
     delete_window.geometry("400x300")
@@ -551,10 +587,10 @@ def candidate_delete_window():
     infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
     infoFrame.grid(row=0, column=0)
 
-    election_ID_label = Label(infoFrame, font=("", 15), text="Enter Candidate ID", height=1)
-    election_ID_label.grid(row=1, column=0)
-    election_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    election_ID_entry.grid(row=1, column=1)
+    candidate_ID_label = Label(infoFrame, font=("", 15), text="Enter Candidate ID", height=1)
+    candidate_ID_label.grid(row=1, column=0)
+    candidate_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    candidate_ID_entry.grid(row=1, column=1)
 
 
     SubmitFrame = Frame(delete_window)
@@ -562,7 +598,7 @@ def candidate_delete_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     delete_window.grab_set()
