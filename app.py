@@ -231,6 +231,16 @@ def open_committee_window():
 
 # ==================== Button Windows ====================
 def committee_insert_window():
+    def submit_query():
+        insert_query = "INSERT INTO Committee (CommitteeID, CommitteeName, Treasurer, CommitteeType, State) VALUES (%s, %s, %s, %s, %s)"
+        committee_data = (committee_ID_entry.get(), committee_name_entry.get(),
+                          treasurer_entry.get(), committee_type_entry.get(), state_entry.get())
+        cursor.execute(insert_query, committee_data)
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Inserted Successfully")
+
+
     insert_window = Toplevel(window)
     insert_window.title("Committee Insert")
     insert_window.geometry("500x400")
@@ -272,13 +282,29 @@ def committee_insert_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     insert_window.grab_set()
 
 
 def committee_update_window():
+    def submit_query():
+        update_query = """
+        UPDATE Committee
+        SET CommitteeName = %s, 
+            Treasurer = %s, 
+            CommitteeType = %s,
+            State = %s
+        WHERE CommitteeID = %s;
+        """
+        cursor.execute(update_query, (committee_name_entry.get(), treasurer_entry.get(),
+                                      committee_type_entry.get(), state_entry.get(), committee_ID_entry.get()))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Updated Successfully")
+
+
     update_window = Toplevel(window)
     update_window.title("Committee Update")
     update_window.geometry("500x400")
@@ -320,13 +346,23 @@ def committee_update_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     update_window.grab_set()
 
 
 def committee_delete_window():
+    def submit_query():
+        committeeID = committee_ID_entry.get()
+        delete_query = "DELETE FROM Committee WHERE CommitteeID = %s;"
+
+        cursor.execute(delete_query, (committeeID,))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Deleted Successfully")
+
+
     delete_window = Toplevel(window)
     delete_window.title("Committee Delete")
     delete_window.geometry("400x300")
@@ -337,10 +373,10 @@ def committee_delete_window():
     infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
     infoFrame.grid(row=0, column=0)
 
-    election_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
-    election_ID_label.grid(row=1, column=0)
-    election_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    election_ID_entry.grid(row=1, column=1)
+    committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
+    committee_ID_label.grid(row=1, column=0)
+    committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+    committee_ID_entry.grid(row=1, column=1)
 
 
     SubmitFrame = Frame(delete_window)
@@ -348,7 +384,7 @@ def committee_delete_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     delete_window.grab_set()
