@@ -510,6 +510,7 @@ def candidate_update_window():
 
         messagebox.showinfo("Success", "Data Updated Successfully")
 
+
     update_window = Toplevel(window)
     update_window.title("Candidate Update")
     update_window.geometry("500x400")
@@ -577,6 +578,7 @@ def candidate_delete_window():
 
         messagebox.showinfo("Success", "Data Deleted Successfully")
 
+
     delete_window = Toplevel(window)
     delete_window.title("Candidate Delete")
     delete_window.geometry("400x300")
@@ -639,6 +641,15 @@ def open_contribution_window():
 
 # ==================== Button Windows ====================
 def contribution_insert_window():
+    def submit_query():
+        insert_query = "INSERT INTO Contribution (ContributionID, DonorName, CommitteeID, Amount, Date) VALUES (%s, %s, %s, %s, %s)"
+        contribution_data = (contribution_ID_entry.get(), donor_name_entry.get(), committee_ID_entry.get(),
+                             amount_entry.get(), date_entry.get())
+        cursor.execute(insert_query, contribution_data)
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Inserted Successfully")
+
     insert_window = Toplevel(window)
     insert_window.title("Contribution Insert")
     insert_window.geometry("500x400")
@@ -680,13 +691,29 @@ def contribution_insert_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     insert_window.grab_set()
 
 
 def contribution_update_window():
+    def submit_query():
+        update_query = """
+        UPDATE Contribution
+        SET DonorName = %s, 
+            CommitteeID = %s, 
+            Amount = %s,
+            Date = %s
+        WHERE ContributionID = %s;
+    """
+        cursor.execute(update_query, (donor_name_entry.get(), committee_ID_entry.get(), amount_entry.get(),
+                                      date_entry.get(), contribution_ID_entry.get()))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Updated Successfully")
+
+
     update_window = Toplevel(window)
     update_window.title("Contribution Update")
     update_window.geometry("500x400")
@@ -728,13 +755,22 @@ def contribution_update_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     update_window.grab_set()
 
 
 def contribution_delete_window():
+    def submit_query():
+        contributionID = contribution_ID_entry.get()
+        delete_query = "DELETE FROM Contribution WHERE ContributionID = %s;"
+        cursor.execute(delete_query, (contributionID,))
+        connection.commit()
+
+        messagebox.showinfo("Success", "Data Deleted Successfully")
+
+
     delete_window = Toplevel(window)
     delete_window.title("Contribution Delete")
     delete_window.geometry("400x300")
@@ -756,7 +792,7 @@ def contribution_delete_window():
     submitFrame = LabelFrame(InfoFrame)
     submitFrame.grid(row=0, column=0)
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10)
+    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
     submit_button.grid(row=1, column=0)
 
     delete_window.grab_set()
