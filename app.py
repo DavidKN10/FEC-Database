@@ -1,6 +1,6 @@
 from tkinter import *
-from tkinter import ttk, filedialog, messagebox
-from tkinter.ttk import Combobox
+from tkinter import ttk, messagebox
+from tkinter.ttk import Scrollbar, Treeview
 import mysql.connector
 
 
@@ -15,15 +15,182 @@ connection = mysql.connector.connect(
 cursor = connection.cursor()
 # ==================== Election Window ====================
 def open_election_window():
+    # function to show everything in the table
+    def fetch_data():
+        cursor.execute("SELECT * FROM election")
+        rows = cursor.fetchall()
+        if len(rows) != 0:
+            election_table.delete(*election_table.get_children())
+            for row in rows:
+                election_table.insert("", END, values=row)
+            connection.commit()
+
+    #function to highlight a row that you click on
+    def get_cursor():
+        cursor_row = election_table.focus()
+
+    # ==================== Button Windows ====================
+    def election_insert_window():
+        def submit_query():
+            insert_query = "INSERT INTO Election (ElectionID, ElectionName, Date, State) VALUES (%s, %s, %s, %s)"
+            election_data = (election_ID_entry.get(), election_name_entry.get(),
+                             election_date_entry.get(), election_state_entry.get())
+            cursor.execute(insert_query, election_data)
+            connection.commit()
+
+            fetch_data()
+
+            messagebox.showinfo("Success", "Data Inserted Successfully")
+
+        insert_window = Toplevel(window)
+        insert_window.title("Election Insert")
+        insert_window.geometry("500x400")
+        Label(insert_window, font=("", 15, "bold"), text="Insert Election").pack()
+
+        InfoFrame = Frame(insert_window)
+        InfoFrame.place(x=0, y=50, height=500, width=500)
+        infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+        infoFrame.grid(row=0, column=0)
+
+        election_ID_label = Label(infoFrame, font=("", 15), text="Enter Election ID", height=1)
+        election_ID_label.grid(row=1, column=0)
+        election_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        election_ID_entry.grid(row=1, column=1)
+
+        election_name_label = Label(infoFrame, font=("", 15), text="Enter Election name", height=1)
+        election_name_label.grid(row=2, column=0)
+        election_name_entry = Entry(infoFrame, font=("", 15), width=18)
+        election_name_entry.grid(row=2, column=1)
+
+        election_date_label = Label(infoFrame, font=("", 15), text="Enter Election date", height=1)
+        election_date_label.grid(row=3, column=0)
+        election_date_entry = Entry(infoFrame, font=("", 15), width=18)
+        election_date_entry.grid(row=3, column=1)
+
+        election_state_label = Label(infoFrame, font=("", 15), text="Enter Election state", height=1)
+        election_state_label.grid(row=4, column=0)
+        election_state_entry = Entry(infoFrame, font=("", 15), width=18)
+        election_state_entry.grid(row=4, column=1)
+
+        SubmitFrame = Frame(insert_window)
+        SubmitFrame.place(x=0, y=300, height=250, width=250)
+        submitFrame = LabelFrame(InfoFrame)
+        submitFrame.grid(row=0, column=0)
+
+        submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
+        submit_button.grid(row=1, column=0)
+
+        insert_window.grab_set()
+
+    def election_update_window():
+        def submit_query():
+            update_query = "UPDATE Election SET ElectionName=%s, Date=%s, State=%s WHERE ElectionID=%s"
+            cursor.execute(update_query, (election_name_entry.get(), election_date_entry.get(),
+                                          election_state_entry.get(), election_ID_entry.get()))
+            connection.commit()
+
+            fetch_data()
+
+            messagebox.showinfo("Success", "Data Updated Successfully")
+
+        update_window = Toplevel(window)
+        update_window.title("Election Update")
+        update_window.geometry("500x400")
+        Label(update_window, font=("", 15, "bold"), text="Update Election").pack()
+
+        InfoFrame = Frame(update_window)
+        InfoFrame.place(x=0, y=50, height=500, width=500)
+        infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+        infoFrame.grid(row=0, column=0)
+
+        election_ID_label = Label(infoFrame, font=("", 15), text="Enter Election ID", height=1)
+        election_ID_label.grid(row=1, column=0)
+        election_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        election_ID_entry.grid(row=1, column=1)
+
+        election_name_label = Label(infoFrame, font=("", 15), text="Enter Election name", height=1)
+        election_name_label.grid(row=2, column=0)
+        election_name_entry = Entry(infoFrame, font=("", 15), width=18)
+        election_name_entry.grid(row=2, column=1)
+
+        election_date_label = Label(infoFrame, font=("", 15), text="Enter Election date", height=1)
+        election_date_label.grid(row=3, column=0)
+        election_date_entry = Entry(infoFrame, font=("", 15), width=18)
+        election_date_entry.grid(row=3, column=1)
+
+        election_state_label = Label(infoFrame, font=("", 15), text="Enter Election state", height=1)
+        election_state_label.grid(row=4, column=0)
+        election_state_entry = Entry(infoFrame, font=("", 15), width=18)
+        election_state_entry.grid(row=4, column=1)
+
+        SubmitFrame = Frame(update_window)
+        SubmitFrame.place(x=0, y=300, height=250, width=250)
+        submitFrame = LabelFrame(InfoFrame)
+        submitFrame.grid(row=0, column=0)
+
+        submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
+        submit_button.grid(row=1, column=0)
+
+        update_window.grab_set()
+
+    def election_delete_window():
+        def submit_query():
+            electionID = election_ID_entry.get()
+            delete_dependent_rows(electionID)
+            delete_query = "DELETE FROM Election WHERE ElectionID=%s"
+
+            cursor.execute(delete_query, (electionID,))
+            connection.commit()
+
+            fetch_data()
+
+            messagebox.showinfo("Success", "Data Deleted Successfully")
+
+        def delete_dependent_rows(electionID):
+            delete_query = "DELETE FROM candidate WHERE ElectionID=%s"
+            cursor.execute(delete_query, (electionID,))
+            connection.commit()
+
+        delete_window = Toplevel(window)
+        delete_window.title("Election Delete")
+        delete_window.geometry("400x300")
+        Label(delete_window, font=("", 15, "bold"), text="Delete Election").pack()
+
+        InfoFrame = Frame(delete_window)
+        InfoFrame.place(x=0, y=50, height=500, width=500)
+        infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+        infoFrame.grid(row=0, column=0)
+
+        election_ID_label = Label(infoFrame, font=("", 15), text="Enter Election ID", height=1)
+        election_ID_label.grid(row=1, column=0)
+        election_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        election_ID_entry.grid(row=1, column=1)
+
+        SubmitFrame = Frame(delete_window)
+        SubmitFrame.place(x=0, y=150, height=250, width=250)
+        submitFrame = LabelFrame(InfoFrame)
+        submitFrame.grid(row=0, column=0)
+
+        submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
+        submit_button.grid(row=1, column=0)
+
+        delete_window.grab_set()
+
+    # ==================== Main Election Window ====================
     election_window = Toplevel(window)
     election_window.title("Election Table")
     election_window.geometry("900x500")
     Label(election_window, font=("", 20, "bold"), text="Election").pack()
     election_window.grab_set()
 
+    election_ID = StringVar()
+    election_name = StringVar()
+    date = StringVar()
+    State = StringVar()
+
     # ==================== Actions Frame ====================
     ActionFrame = Frame(election_window)
-    ActionFrame.place(x=600, y=50, height=500, width=500)
+    ActionFrame.place(x=650, y=50, height=200, width=200)
     actionFrame = LabelFrame(ActionFrame, font=("", 15, "bold"), text="Select an action")
     actionFrame.grid(row=0, column=0)
 
@@ -42,159 +209,36 @@ def open_election_window():
 
     # ==================== Table Info Frame ====================
     InfoFrame = Frame(election_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
+    InfoFrame.place(x=10, y=50, height=700, width=600)
     infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Election Info")
     infoFrame.grid(row=0, column=0)
 
 
-# ==================== Button Windows ====================
-def election_insert_window():
-    def submit_query():
-        insert_query = "INSERT INTO Election (ElectionID, ElectionName, Date, State) VALUES (%s, %s, %s, %s)"
-        election_data = (election_ID_entry.get(), election_name_entry.get(),
-                         election_date_entry.get(), election_state_entry.get())
-        cursor.execute(insert_query, election_data)
-        connection.commit()
+    scroll_y = ttk.Scrollbar(infoFrame, orient=VERTICAL)
+    election_table = ttk.Treeview(infoFrame, columns=("electionID", "electionName", "date", "state"),
+                                  yscrollcommand=scroll_y.set, height=18)
 
-        messagebox.showinfo("Success", "Data Inserted Successfully")
-
-
-    insert_window = Toplevel(window)
-    insert_window.title("Election Insert")
-    insert_window.geometry("500x400")
-    Label(insert_window, font=("", 15, "bold"), text="Insert Election").pack()
-
-    InfoFrame = Frame(insert_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
-    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
-    infoFrame.grid(row=0, column=0)
-
-    election_ID_label = Label(infoFrame, font=("", 15), text="Enter Election ID", height=1)
-    election_ID_label.grid(row=1, column=0)
-    election_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    election_ID_entry.grid(row=1, column=1)
-
-    election_name_label = Label(infoFrame, font=("", 15), text="Enter Election name", height=1)
-    election_name_label.grid(row=2, column=0)
-    election_name_entry = Entry(infoFrame, font=("", 15), width=18)
-    election_name_entry.grid(row=2, column=1)
-
-    election_date_label = Label(infoFrame, font=("", 15), text="Enter Election date", height=1)
-    election_date_label.grid(row=3, column=0)
-    election_date_entry = Entry(infoFrame, font=("", 15), width=18)
-    election_date_entry.grid(row=3, column=1)
-
-    election_state_label = Label(infoFrame, font=("", 15), text="Enter Election state", height=1)
-    election_state_label.grid(row=4, column=0)
-    election_state_entry = Entry(infoFrame, font=("", 15), width=18)
-    election_state_entry.grid(row=4, column=1)
+    election_table.column("#0", width=100)
+    election_table.column("electionID", anchor=W, width=100)
+    election_table.column("electionName", anchor=W, width=250)
+    election_table.column("date", anchor=W, width=100)
+    election_table.column("state", anchor=W, width=50)
 
 
-    SubmitFrame = Frame(insert_window)
-    SubmitFrame.place(x=0, y=300, height=250, width=250)
-    submitFrame = LabelFrame(InfoFrame)
-    submitFrame.grid(row=0, column=0)
+    election_table.heading("electionID", text="Election ID")
+    election_table.heading("electionName", text="Election Name")
+    election_table.heading("date", text="Date")
+    election_table.heading("state", text="State")
 
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
-    submit_button.grid(row=1, column=0)
+    election_table["show"]="headings"
 
-    insert_window.grab_set()
+    scroll_y.pack(side=RIGHT, fill=Y)
+    scroll_y = ttk.Scrollbar(command=election_table.yview)
 
+    election_table.configure(yscrollcommand=scroll_y.set)
 
-
-def election_update_window():
-    def submit_query():
-        update_query = "UPDATE Election SET ElectionName=%s, Date=%s, State=%s WHERE ElectionID=%s"
-        cursor.execute(update_query, (election_name_entry.get(), election_date_entry.get(),
-                         election_state_entry.get(), election_ID_entry.get()))
-        connection.commit()
-
-        messagebox.showinfo("Success", "Data Updated Successfully")
-
-
-    update_window = Toplevel(window)
-    update_window.title("Election Update")
-    update_window.geometry("500x400")
-    Label(update_window, font=("", 15, "bold"), text="Update Election").pack()
-
-    InfoFrame = Frame(update_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
-    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
-    infoFrame.grid(row=0, column=0)
-
-    election_ID_label = Label(infoFrame, font=("", 15), text="Enter Election ID", height=1)
-    election_ID_label.grid(row=1, column=0)
-    election_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    election_ID_entry.grid(row=1, column=1)
-
-    election_name_label = Label(infoFrame, font=("", 15), text="Enter Election name", height=1)
-    election_name_label.grid(row=2, column=0)
-    election_name_entry = Entry(infoFrame, font=("", 15), width=18)
-    election_name_entry.grid(row=2, column=1)
-
-    election_date_label = Label(infoFrame, font=("", 15), text="Enter Election date", height=1)
-    election_date_label.grid(row=3, column=0)
-    election_date_entry = Entry(infoFrame, font=("", 15), width=18)
-    election_date_entry.grid(row=3, column=1)
-
-    election_state_label = Label(infoFrame, font=("", 15), text="Enter Election state", height=1)
-    election_state_label.grid(row=4, column=0)
-    election_state_entry = Entry(infoFrame, font=("", 15), width=18)
-    election_state_entry.grid(row=4, column=1)
-
-    SubmitFrame = Frame(update_window)
-    SubmitFrame.place(x=0, y=300, height=250, width=250)
-    submitFrame = LabelFrame(InfoFrame)
-    submitFrame.grid(row=0, column=0)
-
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
-    submit_button.grid(row=1, column=0)
-
-    update_window.grab_set()
-
-
-def election_delete_window():
-    def submit_query():
-        electionID = election_ID_entry.get()
-        delete_dependent_rows(electionID)
-        delete_query = "DELETE FROM Election WHERE ElectionID=%s"
-
-        cursor.execute(delete_query, (electionID,))
-        connection.commit()
-
-        messagebox.showinfo("Success", "Data Deleted Successfully")
-
-    def delete_dependent_rows(electionID):
-        delete_query = "DELETE FROM candidate WHERE ElectionID=%s"
-        cursor.execute(delete_query, (electionID,))
-        connection.commit()
-
-
-    delete_window = Toplevel(window)
-    delete_window.title("Election Delete")
-    delete_window.geometry("400x300")
-    Label(delete_window, font=("", 15, "bold"), text="Delete Election").pack()
-
-    InfoFrame = Frame(delete_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
-    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
-    infoFrame.grid(row=0, column=0)
-
-    election_ID_label = Label(infoFrame, font=("", 15), text="Enter Election ID", height=1)
-    election_ID_label.grid(row=1, column=0)
-    election_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    election_ID_entry.grid(row=1, column=1)
-
-
-    SubmitFrame = Frame(delete_window)
-    SubmitFrame.place(x=0, y=150, height=250, width=250)
-    submitFrame = LabelFrame(InfoFrame)
-    submitFrame.grid(row=0, column=0)
-
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
-    submit_button.grid(row=1, column=0)
-
-    delete_window.grab_set()
+    election_table.pack(fill=BOTH, expand=1)
+    fetch_data()
 
 
 # ==================== Committee Window ====================
@@ -1193,6 +1237,8 @@ def filing_delete_window():
 
 
 def exit_program():
+    cursor.close()
+    connection.close()
     window.destroy()
 
 
