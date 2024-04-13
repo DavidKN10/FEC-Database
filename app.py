@@ -733,6 +733,179 @@ def open_candidate_window():
 
 # ==================== Contribution Window ====================
 def open_contribution_window():
+    #function to show everything in the table
+    def fetch_data():
+        cursor.execute("SELECT * FROM contribution")
+        rows = cursor.fetchall()
+        if len(rows) != 0:
+            contribution_table.delete(*contribution_table.get_children())
+            for row in rows:
+                contribution_table.insert("", END, values=row)
+            connection.commit()
+
+    #function to highlight a row that you click on
+    def get_cursor():
+        cursor_row = contribution_table.focus()
+
+    # ==================== Button Windows ====================
+    def contribution_insert_window():
+        def submit_query():
+            insert_query = "INSERT INTO Contribution (ContributionID, DonorName, CommitteeID, Amount, Date) VALUES (%s, %s, %s, %s, %s)"
+            contribution_data = (contribution_ID_entry.get(), donor_name_entry.get(), committee_ID_entry.get(),
+                                 amount_entry.get(), date_entry.get())
+            cursor.execute(insert_query, contribution_data)
+            connection.commit()
+
+            fetch_data()
+
+            messagebox.showinfo("Success", "Data Inserted Successfully")
+
+        insert_window = Toplevel(window)
+        insert_window.title("Contribution Insert")
+        insert_window.geometry("500x400")
+        Label(insert_window, font=("", 20, "bold"), text="Insert Contribution").pack()
+
+        InfoFrame = Frame(insert_window)
+        InfoFrame.place(x=0, y=50, height=500, width=500)
+        infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+        infoFrame.grid(row=0, column=0)
+
+        contribution_ID_label = Label(infoFrame, font=("", 15), text="Enter Contribution ID", height=1)
+        contribution_ID_label.grid(row=1, column=0)
+        contribution_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        contribution_ID_entry.grid(row=1, column=1)
+
+        donor_name_label = Label(infoFrame, font=("", 15), text="Enter Donor Name", height=1)
+        donor_name_label.grid(row=2, column=0)
+        donor_name_entry = Entry(infoFrame, font=("", 15), width=18)
+        donor_name_entry.grid(row=2, column=1)
+
+        committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
+        committee_ID_label.grid(row=3, column=0)
+        committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        committee_ID_entry.grid(row=3, column=1)
+
+        amount_label = Label(infoFrame, font=("", 15), text="Enter Amount", height=1)
+        amount_label.grid(row=4, column=0)
+        amount_entry = Entry(infoFrame, font=("", 15), width=18)
+        amount_entry.grid(row=4, column=1)
+
+        date_label = Label(infoFrame, font=("", 15), text="Enter Date", height=1)
+        date_label.grid(row=5, column=0)
+        date_entry = Entry(infoFrame, font=("", 15), width=18)
+        date_entry.grid(row=5, column=1)
+
+        SubmitFrame = Frame(insert_window)
+        SubmitFrame.place(x=0, y=300, height=250, width=250)
+        submitFrame = LabelFrame(InfoFrame)
+        submitFrame.grid(row=0, column=0)
+
+        submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
+        submit_button.grid(row=1, column=0)
+
+        insert_window.grab_set()
+
+    def contribution_update_window():
+        def submit_query():
+            update_query = """
+            UPDATE Contribution
+            SET DonorName = %s, 
+                CommitteeID = %s, 
+                Amount = %s,
+                Date = %s
+            WHERE ContributionID = %s;
+        """
+            cursor.execute(update_query, (donor_name_entry.get(), committee_ID_entry.get(), amount_entry.get(),
+                                          date_entry.get(), contribution_ID_entry.get()))
+            connection.commit()
+
+            fetch_data()
+
+            messagebox.showinfo("Success", "Data Updated Successfully")
+
+        update_window = Toplevel(window)
+        update_window.title("Contribution Update")
+        update_window.geometry("500x400")
+        Label(update_window, font=("", 20, "bold"), text="Update Contribution").pack()
+
+        InfoFrame = Frame(update_window)
+        InfoFrame.place(x=0, y=50, height=500, width=500)
+        infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"))
+        infoFrame.grid(row=0, column=0)
+
+        contribution_ID_label = Label(infoFrame, font=("", 15), text="Enter Contribution ID", height=1)
+        contribution_ID_label.grid(row=1, column=0)
+        contribution_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        contribution_ID_entry.grid(row=1, column=1)
+
+        donor_name_label = Label(infoFrame, font=("", 15), text="Enter Donor Name", height=1)
+        donor_name_label.grid(row=2, column=0)
+        donor_name_entry = Entry(infoFrame, font=("", 15), width=18)
+        donor_name_entry.grid(row=2, column=1)
+
+        committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
+        committee_ID_label.grid(row=3, column=0)
+        committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        committee_ID_entry.grid(row=3, column=1)
+
+        amount_label = Label(infoFrame, font=("", 15), text="Enter Amount", height=1)
+        amount_label.grid(row=4, column=0)
+        amount_entry = Entry(infoFrame, font=("", 15), width=18)
+        amount_entry.grid(row=4, column=1)
+
+        date_label = Label(infoFrame, font=("", 15), text="Enter Date", height=1)
+        date_label.grid(row=5, column=0)
+        date_entry = Entry(infoFrame, font=("", 15), width=18)
+        date_entry.grid(row=5, column=1)
+
+        SubmitFrame = Frame(update_window)
+        SubmitFrame.place(x=0, y=300, height=250, width=250)
+        submitFrame = LabelFrame(InfoFrame)
+        submitFrame.grid(row=0, column=0)
+
+        submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
+        submit_button.grid(row=1, column=0)
+
+        update_window.grab_set()
+
+    def contribution_delete_window():
+        def submit_query():
+            contributionID = contribution_ID_entry.get()
+            delete_query = "DELETE FROM Contribution WHERE ContributionID = %s;"
+            cursor.execute(delete_query, (contributionID,))
+            connection.commit()
+
+            fetch_data()
+
+            messagebox.showinfo("Success", "Data Deleted Successfully")
+
+        delete_window = Toplevel(window)
+        delete_window.title("Contribution Delete")
+        delete_window.geometry("400x300")
+        Label(delete_window, font=("", 20, "bold"), text="Delete Contribution").pack()
+
+        InfoFrame = Frame(delete_window)
+        InfoFrame.place(x=0, y=50, height=500, width=500)
+        infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+        infoFrame.grid(row=0, column=0)
+
+        contribution_ID_label = Label(infoFrame, font=("", 15), text="Enter Contribution ID", height=1)
+        contribution_ID_label.grid(row=1, column=0)
+        contribution_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        contribution_ID_entry.grid(row=1, column=1)
+
+        SubmitFrame = Frame(delete_window)
+        SubmitFrame.place(x=0, y=150, height=250, width=250)
+        submitFrame = LabelFrame(InfoFrame)
+        submitFrame.grid(row=0, column=0)
+
+        submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
+        submit_button.grid(row=1, column=0)
+
+        delete_window.grab_set()
+
+
+    # ==================== Main Contribution Window ====================
     contribution_window = Toplevel(window)
     contribution_window.title("Contribution Table")
     contribution_window.geometry("900x500")
@@ -759,172 +932,221 @@ def open_contribution_window():
 
     # ==================== Table Info Frame ====================
     InfoFrame = Frame(contribution_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
+    InfoFrame.place(x=0, y=50, height=700, width=600)
     infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Contribution Info")
     infoFrame.grid(row=0, column=0)
 
+    scroll_y = ttk.Scrollbar(infoFrame, orient=VERTICAL)
+    contribution_table = ttk.Treeview(infoFrame, columns=("contributionID", "donorName", "committeeID", "amount", "date"),
+                                      yscrollcommand=scroll_y, height=18)
 
-# ==================== Button Windows ====================
-def contribution_insert_window():
-    def submit_query():
-        insert_query = "INSERT INTO Contribution (ContributionID, DonorName, CommitteeID, Amount, Date) VALUES (%s, %s, %s, %s, %s)"
-        contribution_data = (contribution_ID_entry.get(), donor_name_entry.get(), committee_ID_entry.get(),
-                             amount_entry.get(), date_entry.get())
-        cursor.execute(insert_query, contribution_data)
-        connection.commit()
+    contribution_table.column("#0", width=100)
+    contribution_table.column("contributionID", anchor=W, width=100)
+    contribution_table.column("donorName", anchor=W, width=100)
+    contribution_table.column("committeeID", anchor=W, width=100)
+    contribution_table.column("amount", anchor=W, width=100)
+    contribution_table.column("date", anchor=W, width=100)
 
-        messagebox.showinfo("Success", "Data Inserted Successfully")
+    contribution_table.heading("contributionID", text="Contribution ID")
+    contribution_table.heading("donorName", text="Donor Name")
+    contribution_table.heading("committeeID", text="Committee ID")
+    contribution_table.heading("amount", text="Amount")
+    contribution_table.heading("date", text="Date")
 
-    insert_window = Toplevel(window)
-    insert_window.title("Contribution Insert")
-    insert_window.geometry("500x400")
-    Label(insert_window, font=("", 20, "bold"), text="Insert Contribution").pack()
+    contribution_table["show"] = "headings"
 
-    InfoFrame = Frame(insert_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
-    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
-    infoFrame.grid(row=0, column=0)
+    scroll_y.pack(side=RIGHT, fill=Y)
+    scroll_y = ttk.Scrollbar(command=contribution_table.yview)
 
-    contribution_ID_label = Label(infoFrame, font=("", 15), text="Enter Contribution ID", height=1)
-    contribution_ID_label.grid(row=1, column=0)
-    contribution_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    contribution_ID_entry.grid(row=1, column=1)
+    contribution_table.pack(fill=BOTH, expand=1)
 
-    donor_name_label = Label(infoFrame, font=("", 15), text="Enter Donor Name", height=1)
-    donor_name_label.grid(row=2, column=0)
-    donor_name_entry = Entry(infoFrame, font=("", 15), width=18)
-    donor_name_entry.grid(row=2, column=1)
-
-    committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
-    committee_ID_label.grid(row=3, column=0)
-    committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    committee_ID_entry.grid(row=3, column=1)
-
-    amount_label = Label(infoFrame, font=("", 15), text="Enter Amount", height=1)
-    amount_label.grid(row=4, column=0)
-    amount_entry = Entry(infoFrame, font=("", 15), width=18)
-    amount_entry.grid(row=4, column=1)
-
-    date_label = Label(infoFrame, font=("", 15), text="Enter Date", height=1)
-    date_label.grid(row=5, column=0)
-    date_entry = Entry(infoFrame, font=("", 15), width=18)
-    date_entry.grid(row=5, column=1)
-
-
-    SubmitFrame = Frame(insert_window)
-    SubmitFrame.place(x=0, y=300, height=250, width=250)
-    submitFrame = LabelFrame(InfoFrame)
-    submitFrame.grid(row=0, column=0)
-
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
-    submit_button.grid(row=1, column=0)
-
-    insert_window.grab_set()
-
-
-def contribution_update_window():
-    def submit_query():
-        update_query = """
-        UPDATE Contribution
-        SET DonorName = %s, 
-            CommitteeID = %s, 
-            Amount = %s,
-            Date = %s
-        WHERE ContributionID = %s;
-    """
-        cursor.execute(update_query, (donor_name_entry.get(), committee_ID_entry.get(), amount_entry.get(),
-                                      date_entry.get(), contribution_ID_entry.get()))
-        connection.commit()
-
-        messagebox.showinfo("Success", "Data Updated Successfully")
-
-
-    update_window = Toplevel(window)
-    update_window.title("Contribution Update")
-    update_window.geometry("500x400")
-    Label(update_window, font=("", 20, "bold"), text="Update Contribution").pack()
-
-    InfoFrame = Frame(update_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
-    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"))
-    infoFrame.grid(row=0, column=0)
-
-    contribution_ID_label = Label(infoFrame, font=("", 15), text="Enter Contribution ID", height=1)
-    contribution_ID_label.grid(row=1, column=0)
-    contribution_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    contribution_ID_entry.grid(row=1, column=1)
-
-    donor_name_label = Label(infoFrame, font=("", 15), text="Enter Donor Name", height=1)
-    donor_name_label.grid(row=2, column=0)
-    donor_name_entry = Entry(infoFrame, font=("", 15), width=18)
-    donor_name_entry.grid(row=2, column=1)
-
-    committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
-    committee_ID_label.grid(row=3, column=0)
-    committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    committee_ID_entry.grid(row=3, column=1)
-
-    amount_label = Label(infoFrame, font=("", 15), text="Enter Amount", height=1)
-    amount_label.grid(row=4, column=0)
-    amount_entry = Entry(infoFrame, font=("", 15), width=18)
-    amount_entry.grid(row=4, column=1)
-
-    date_label = Label(infoFrame, font=("", 15), text="Enter Date", height=1)
-    date_label.grid(row=5, column=0)
-    date_entry = Entry(infoFrame, font=("", 15), width=18)
-    date_entry.grid(row=5, column=1)
-
-
-    SubmitFrame = Frame(update_window)
-    SubmitFrame.place(x=0, y=300, height=250, width=250)
-    submitFrame = LabelFrame(InfoFrame)
-    submitFrame.grid(row=0, column=0)
-
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
-    submit_button.grid(row=1, column=0)
-
-    update_window.grab_set()
-
-
-def contribution_delete_window():
-    def submit_query():
-        contributionID = contribution_ID_entry.get()
-        delete_query = "DELETE FROM Contribution WHERE ContributionID = %s;"
-        cursor.execute(delete_query, (contributionID,))
-        connection.commit()
-
-        messagebox.showinfo("Success", "Data Deleted Successfully")
-
-
-    delete_window = Toplevel(window)
-    delete_window.title("Contribution Delete")
-    delete_window.geometry("400x300")
-    Label(delete_window, font=("", 20, "bold"), text="Delete Contribution").pack()
-
-    InfoFrame = Frame(delete_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
-    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
-    infoFrame.grid(row=0, column=0)
-
-    contribution_ID_label = Label(infoFrame, font=("", 15), text="Enter Contribution ID", height=1)
-    contribution_ID_label.grid(row=1, column=0)
-    contribution_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    contribution_ID_entry.grid(row=1, column=1)
-
-
-    SubmitFrame = Frame(delete_window)
-    SubmitFrame.place(x=0, y=150, height=250, width=250)
-    submitFrame = LabelFrame(InfoFrame)
-    submitFrame.grid(row=0, column=0)
-
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
-    submit_button.grid(row=1, column=0)
-
-    delete_window.grab_set()
+    fetch_data()
 
 
 # ==================== Expenditure Window ====================
 def open_expenditure_window():
+    # function to show everything in the table
+    def fetch_data():
+        cursor.execute("SELECT * FROM expenditure")
+        rows = cursor.fetchall()
+        if len(rows) != 0:
+            expenditure_table.delete(*expenditure_table.get_children())
+            for row in rows:
+                expenditure_table.insert("", END, values=row)
+            connection.commit()
+
+    #function to highlight a row that you click on
+    def get_cursor():
+        cursor_row = expenditure_table.focus()
+
+    # ==================== Button Windows ====================
+    def expenditure_insert_window():
+        def submit_query():
+            insert_query = "INSERT INTO Expenditure (ExpenditureID, Payee, CommitteeID, Amount, Purpose, Date) VALUES (%s, %s, %s, %s, %s, %s)"
+            expenditure_data = (expenditure_ID_entry.get(), payee_entry.get(), committee_ID_entry.get(),
+                                amount_entry.get(), purpose_entry.get(), date_entry.get())
+            cursor.execute(insert_query, expenditure_data)
+            connection.commit()
+
+            fetch_data()
+
+            messagebox.showinfo("Success", "Data Inserted Successfully")
+
+        insert_window = Toplevel(window)
+        insert_window.title("Expenditure Insert")
+        insert_window.geometry("500x400")
+        Label(insert_window, font=("", 20, "bold"), text="Insert Expenditure").pack()
+
+        InfoFrame = Frame(insert_window)
+        InfoFrame.place(x=0, y=50, height=500, width=500)
+        infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+        infoFrame.grid(row=0, column=0)
+
+        expenditure_ID_label = Label(infoFrame, font=("", 15), text="Enter Expenditure ID", height=1)
+        expenditure_ID_label.grid(row=1, column=0)
+        expenditure_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        expenditure_ID_entry.grid(row=1, column=1)
+
+        payee_label = Label(infoFrame, font=("", 15), text="Enter Payee Name", height=1)
+        payee_label.grid(row=2, column=0)
+        payee_entry = Entry(infoFrame, font=("", 15), width=18)
+        payee_entry.grid(row=2, column=1)
+
+        committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
+        committee_ID_label.grid(row=3, column=0)
+        committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        committee_ID_entry.grid(row=3, column=1)
+
+        amount_label = Label(infoFrame, font=("", 15), text="Enter Amount", height=1)
+        amount_label.grid(row=4, column=0)
+        amount_entry = Entry(infoFrame, font=("", 15), width=18)
+        amount_entry.grid(row=4, column=1)
+
+        purpose_label = Label(infoFrame, font=("", 15), text="Enter Purpose", height=1)
+        purpose_label.grid(row=5, column=0)
+        purpose_entry = Entry(infoFrame, font=("", 15), width=18)
+        purpose_entry.grid(row=5, column=1)
+
+        date_label = Label(infoFrame, font=("", 15), text="Enter Date", height=1)
+        date_label.grid(row=6, column=0)
+        date_entry = Entry(infoFrame, font=("", 15), width=18)
+        date_entry.grid(row=6, column=1)
+
+        SubmitFrame = Frame(insert_window)
+        SubmitFrame.place(x=0, y=300, height=250, width=250)
+        submitFrame = LabelFrame(InfoFrame)
+        submitFrame.grid(row=0, column=0)
+
+        submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
+        submit_button.grid(row=1, column=0)
+
+        insert_window.grab_set()
+
+    def expenditure_update_window():
+        def submit_query():
+            update_query = """
+            UPDATE Expenditure
+            SET Payee = %s, 
+                CommitteeID = %s, 
+                Amount = %s,
+                Purpose = %s,
+                Date = %s
+            WHERE ExpenditureID = %s;
+        """
+            cursor.execute(update_query, (payee_entry.get(), committee_ID_entry.get(), amount_entry.get(),
+                                          payee_entry.get(), date_entry.get(), expenditure_ID_entry.get()))
+            connection.commit()
+
+            fetch_data()
+
+            messagebox.showinfo("Success", "Data Updated Successfully")
+
+        update_window = Toplevel(window)
+        update_window.title("Expenditure Update")
+        update_window.geometry("500x400")
+        Label(update_window, font=("", 20, "bold"), text="Update Expenditure").pack()
+
+        InfoFrame = Frame(update_window)
+        InfoFrame.place(x=0, y=50, height=500, width=500)
+        infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+        infoFrame.grid(row=0, column=0)
+
+        expenditure_ID_label = Label(infoFrame, font=("", 15), text="Enter Expenditure ID", height=1)
+        expenditure_ID_label.grid(row=1, column=0)
+        expenditure_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        expenditure_ID_entry.grid(row=1, column=1)
+
+        payee_label = Label(infoFrame, font=("", 15), text="Enter Payee Name", height=1)
+        payee_label.grid(row=2, column=0)
+        payee_entry = Entry(infoFrame, font=("", 15), width=18)
+        payee_entry.grid(row=2, column=1)
+
+        committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
+        committee_ID_label.grid(row=3, column=0)
+        committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        committee_ID_entry.grid(row=3, column=1)
+
+        amount_label = Label(infoFrame, font=("", 15), text="Enter Amount", height=1)
+        amount_label.grid(row=4, column=0)
+        amount_entry = Entry(infoFrame, font=("", 15), width=18)
+        amount_entry.grid(row=4, column=1)
+
+        purpose_label = Label(infoFrame, font=("", 15), text="Enter Purpose", height=1)
+        purpose_label.grid(row=5, column=0)
+        purpose_entry = Entry(infoFrame, font=("", 15), width=18)
+        purpose_entry.grid(row=5, column=1)
+
+        date_label = Label(infoFrame, font=("", 15), text="Enter Date", height=1)
+        date_label.grid(row=6, column=0)
+        date_entry = Entry(infoFrame, font=("", 15), width=18)
+        date_entry.grid(row=6, column=1)
+
+        SubmitFrame = Frame(update_window)
+        SubmitFrame.place(x=0, y=300, height=250, width=250)
+        submitFrame = LabelFrame(InfoFrame)
+        submitFrame.grid(row=0, column=0)
+
+        submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
+        submit_button.grid(row=1, column=0)
+
+        update_window.grab_set()
+
+    def expenditure_delete_window():
+        def submit_query():
+            expenditureID = expenditure_ID_entry.get()
+            delete_query = "DELETE FROM Expenditure WHERE ExpenditureID = %s;"
+            cursor.execute(delete_query, (expenditureID,))
+            connection.commit()
+
+            fetch_data()
+
+            messagebox.showinfo("Success", "Data Deleted Successfully")
+
+        delete_window = Toplevel(window)
+        delete_window.title("Expenditure Delete")
+        delete_window.geometry("400x300")
+        Label(delete_window, font=("", 20, "bold"), text="Delete Expenditure").pack()
+
+        InfoFrame = Frame(delete_window)
+        InfoFrame.place(x=0, y=50, height=500, width=500)
+        infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
+        infoFrame.grid(row=0, column=0)
+
+        expenditure_ID_label = Label(infoFrame, font=("", 15), text="Enter Expenditure ID", height=1)
+        expenditure_ID_label.grid(row=1, column=0)
+        expenditure_ID_entry = Entry(infoFrame, font=("", 15), width=18)
+        expenditure_ID_entry.grid(row=1, column=1)
+
+        SubmitFrame = Frame(delete_window)
+        SubmitFrame.place(x=0, y=150, height=250, width=250)
+        submitFrame = LabelFrame(InfoFrame)
+        submitFrame.grid(row=0, column=0)
+
+        submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
+        submit_button.grid(row=1, column=0)
+
+        delete_window.grab_set()
+
     expenditure_window = Toplevel(window)
     expenditure_window.title("Expenditure Table")
     expenditure_window.geometry("900x500")
@@ -932,7 +1154,7 @@ def open_expenditure_window():
     expenditure_window.grab_set()
     # ==================== Actions Frame ====================
     ActionFrame = Frame(expenditure_window)
-    ActionFrame.place(x=600, y=50, height=500, width=500)
+    ActionFrame.place(x=725, y=50, height=500, width=500)
     actionFrame = LabelFrame(ActionFrame, font=("", 15, "bold"), text="Select an action")
     actionFrame.grid(row=0, column=0)
 
@@ -950,180 +1172,38 @@ def open_expenditure_window():
 
     # ==================== Table Info Frame ====================
     InfoFrame = Frame(expenditure_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
+    InfoFrame.place(x=0, y=50, height=700, width=700)
     infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Expenditure Info")
     infoFrame.grid(row=0, column=0)
 
+    scroll_y = ttk.Scrollbar(infoFrame, orient=VERTICAL)
+    expenditure_table = ttk.Treeview(infoFrame, columns=("expenditureID", "payee", "committeeID",
+                                                         "amount", "purpose", "date"),
+                                     yscrollcommand=scroll_y, height=18)
 
-# ==================== Button Windows ====================
-def expenditure_insert_window():
-    def submit_query():
-        insert_query = "INSERT INTO Expenditure (ExpenditureID, Payee, CommitteeID, Amount, Purpose, Date) VALUES (%s, %s, %s, %s, %s, %s)"
-        expenditure_data = (expenditure_ID_entry.get(), payee_entry.get(), committee_ID_entry.get(),
-                            amount_entry.get(), purpose_entry.get(), date_entry.get())
-        cursor.execute(insert_query, expenditure_data)
-        connection.commit()
+    expenditure_table.column("#0", width=100)
+    expenditure_table.column("expenditureID", anchor=W, width=100)
+    expenditure_table.column("payee", anchor=W, width=100)
+    expenditure_table.column("committeeID", anchor=W, width=100)
+    expenditure_table.column("amount", anchor=W, width=100)
+    expenditure_table.column("purpose", anchor=W, width=100)
+    expenditure_table.column("date", anchor=W, width=100)
 
-        messagebox.showinfo("Success", "Data Inserted Successfully")
+    expenditure_table.heading("expenditureID", text="Expenditure ID")
+    expenditure_table.heading("payee", text="Payee")
+    expenditure_table.heading("committeeID", text="Committee ID")
+    expenditure_table.heading("amount", text="Amount")
+    expenditure_table.heading("purpose", text="Purpose")
+    expenditure_table.heading("date", text="Date")
 
+    expenditure_table["show"] = "headings"
 
-    insert_window = Toplevel(window)
-    insert_window.title("Expenditure Insert")
-    insert_window.geometry("500x400")
-    Label(insert_window, font=("", 20, "bold"), text="Insert Expenditure").pack()
+    scroll_y.pack(side=RIGHT, fill=Y)
+    scroll_y = ttk.Scrollbar(command=expenditure_table.yview)
 
-    InfoFrame = Frame(insert_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
-    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
-    infoFrame.grid(row=0, column=0)
+    expenditure_table.pack(fill=BOTH, expand=1)
 
-    expenditure_ID_label = Label(infoFrame, font=("", 15), text="Enter Expenditure ID", height=1)
-    expenditure_ID_label.grid(row=1, column=0)
-    expenditure_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    expenditure_ID_entry.grid(row=1, column=1)
-
-    payee_label = Label(infoFrame, font=("", 15), text="Enter Payee Name", height=1)
-    payee_label.grid(row=2, column=0)
-    payee_entry = Entry(infoFrame, font=("", 15), width=18)
-    payee_entry.grid(row=2, column=1)
-
-    committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
-    committee_ID_label.grid(row=3, column=0)
-    committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    committee_ID_entry.grid(row=3, column=1)
-
-    amount_label = Label(infoFrame, font=("", 15), text="Enter Amount", height=1)
-    amount_label.grid(row=4, column=0)
-    amount_entry = Entry(infoFrame, font=("", 15), width=18)
-    amount_entry.grid(row=4, column=1)
-
-    purpose_label = Label(infoFrame, font=("", 15), text="Enter Purpose", height=1)
-    purpose_label.grid(row=5, column=0)
-    purpose_entry = Entry(infoFrame, font=("", 15), width=18)
-    purpose_entry.grid(row=5, column=1)
-
-    date_label = Label(infoFrame, font=("", 15), text="Enter Date", height=1)
-    date_label.grid(row=6, column=0)
-    date_entry = Entry(infoFrame, font=("", 15), width=18)
-    date_entry.grid(row=6, column=1)
-
-
-    SubmitFrame = Frame(insert_window)
-    SubmitFrame.place(x=0, y=300, height=250, width=250)
-    submitFrame = LabelFrame(InfoFrame)
-    submitFrame.grid(row=0, column=0)
-
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
-    submit_button.grid(row=1, column=0)
-
-    insert_window.grab_set()
-
-
-def expenditure_update_window():
-    def submit_query():
-        update_query = """
-        UPDATE Expenditure
-        SET Payee = %s, 
-            CommitteeID = %s, 
-            Amount = %s,
-            Purpose = %s,
-            Date = %s
-        WHERE ExpenditureID = %s;
-    """
-        cursor.execute(update_query, (payee_entry.get(), committee_ID_entry.get(), amount_entry.get(),
-                                      payee_entry.get(), date_entry.get(), expenditure_ID_entry.get()))
-        connection.commit()
-
-        messagebox.showinfo("Success", "Data Updated Successfully")
-
-    update_window = Toplevel(window)
-    update_window.title("Expenditure Update")
-    update_window.geometry("500x400")
-    Label(update_window, font=("", 20, "bold"), text="Update Expenditure").pack()
-
-    InfoFrame = Frame(update_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
-    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
-    infoFrame.grid(row=0, column=0)
-
-    expenditure_ID_label = Label(infoFrame, font=("", 15), text="Enter Expenditure ID", height=1)
-    expenditure_ID_label.grid(row=1, column=0)
-    expenditure_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    expenditure_ID_entry.grid(row=1, column=1)
-
-    payee_label = Label(infoFrame, font=("", 15), text="Enter Payee Name", height=1)
-    payee_label.grid(row=2, column=0)
-    payee_entry = Entry(infoFrame, font=("", 15), width=18)
-    payee_entry.grid(row=2, column=1)
-
-    committee_ID_label = Label(infoFrame, font=("", 15), text="Enter Committee ID", height=1)
-    committee_ID_label.grid(row=3, column=0)
-    committee_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    committee_ID_entry.grid(row=3, column=1)
-
-    amount_label = Label(infoFrame, font=("", 15), text="Enter Amount", height=1)
-    amount_label.grid(row=4, column=0)
-    amount_entry = Entry(infoFrame, font=("", 15), width=18)
-    amount_entry.grid(row=4, column=1)
-
-    purpose_label = Label(infoFrame, font=("", 15), text="Enter Purpose", height=1)
-    purpose_label.grid(row=5, column=0)
-    purpose_entry = Entry(infoFrame, font=("", 15), width=18)
-    purpose_entry.grid(row=5, column=1)
-
-    date_label = Label(infoFrame, font=("", 15), text="Enter Date", height=1)
-    date_label.grid(row=6, column=0)
-    date_entry = Entry(infoFrame, font=("", 15), width=18)
-    date_entry.grid(row=6, column=1)
-
-
-    SubmitFrame = Frame(update_window)
-    SubmitFrame.place(x=0, y=300, height=250, width=250)
-    submitFrame = LabelFrame(InfoFrame)
-    submitFrame.grid(row=0, column=0)
-
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
-    submit_button.grid(row=1, column=0)
-
-
-    update_window.grab_set()
-
-
-def expenditure_delete_window():
-    def submit_query():
-        expenditureID = expenditure_ID_entry.get()
-        delete_query = "DELETE FROM Expenditure WHERE ExpenditureID = %s;"
-        cursor.execute(delete_query, (expenditureID,))
-        connection.commit()
-
-        messagebox.showinfo("Success", "Data Deleted Successfully")
-
-
-    delete_window = Toplevel(window)
-    delete_window.title("Expenditure Delete")
-    delete_window.geometry("400x300")
-    Label(delete_window, font=("", 20, "bold"), text="Delete Expenditure").pack()
-
-    InfoFrame = Frame(delete_window)
-    InfoFrame.place(x=0, y=50, height=500, width=500)
-    infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Enter Info")
-    infoFrame.grid(row=0, column=0)
-
-    expenditure_ID_label = Label(infoFrame, font=("", 15), text="Enter Expenditure ID", height=1)
-    expenditure_ID_label.grid(row=1, column=0)
-    expenditure_ID_entry = Entry(infoFrame, font=("", 15), width=18)
-    expenditure_ID_entry.grid(row=1, column=1)
-
-
-    SubmitFrame = Frame(delete_window)
-    SubmitFrame.place(x=0, y=150, height=250, width=250)
-    submitFrame = LabelFrame(InfoFrame)
-    submitFrame.grid(row=0, column=0)
-
-    submit_button = Button(SubmitFrame, text="Submit", font=("", 15), width=10, command=submit_query)
-    submit_button.grid(row=1, column=0)
-
-    delete_window.grab_set()
+    fetch_data()
 
 
 # ==================== Filing Window ====================
