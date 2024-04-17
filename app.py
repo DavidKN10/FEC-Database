@@ -914,7 +914,7 @@ def contribution_window():
 
     # ==================== Actions Frame ====================
     ActionFrame = Frame(contribution_window)
-    ActionFrame.place(x=600, y=50, height=500, width=500)
+    ActionFrame.place(x=650, y=50, height=500, width=500)
     actionFrame = LabelFrame(ActionFrame, font=("", 15, "bold"), text="Select an action")
     actionFrame.grid(row=0, column=0)
 
@@ -932,7 +932,7 @@ def contribution_window():
 
     # ==================== Table Info Frame ====================
     InfoFrame = Frame(contribution_window)
-    InfoFrame.place(x=0, y=50, height=700, width=600)
+    InfoFrame.place(x=10, y=50, height=700, width=600)
     infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Contribution Info")
     infoFrame.grid(row=0, column=0)
 
@@ -1172,7 +1172,7 @@ def expenditure_window():
 
     # ==================== Table Info Frame ====================
     InfoFrame = Frame(expenditure_window)
-    InfoFrame.place(x=0, y=50, height=700, width=700)
+    InfoFrame.place(x=10, y=50, height=700, width=700)
     infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Expenditure Info")
     infoFrame.grid(row=0, column=0)
 
@@ -1669,6 +1669,81 @@ def other_window():
         fetch_data()
 
 
+    def committee_expenses_window():
+        def fetch_data():
+            cursor.execute("""
+            WITH CommitteeFinancials AS (
+                SELECT CommitteeID, SUM(Amount) AS TotalContributions
+                FROM Contribution
+                GROUP BY CommitteeID
+            ),
+            ExpenditureFinancials AS (
+                SELECT CommitteeID, SUM(Amount) AS TotalExpenditures
+                FROM Expenditure
+                GROUP BY CommitteeID
+            )
+            SELECT c.CommitteeID, c.CommitteeName, 
+	            COALESCE(cf.TotalContributions, 0) AS TotalContributions, 
+	            COALESCE(ef.TotalExpenditures, 0) AS TotalExpenditures
+            FROM Committee c
+            LEFT JOIN CommitteeFinancials cf ON c.CommitteeID = cf.CommitteeID
+            LEFT JOIN ExpenditureFinancials ef ON c.CommitteeID = ef.CommitteeID;
+            """)
+            rows = cursor.fetchall()
+            if len(rows) !=0:
+                ce_table.delete(*ce_table.get_children())
+                for row in rows:
+                    ce_table.insert("", END, values=row)
+                connection.commit()
+
+        def get_cursor():
+            cursor_row = ce_table.focus()
+
+        ce_window = Toplevel(window)
+        ce_window.title("Committee Expenses")
+        ce_window.geometry("650x500")
+        Label(ce_window, font=("", 20, "bold"), text="Committee Expenses").pack()
+        ce_window.grab_set()
+
+        ce_InfoFrame = Frame(ce_window)
+        ce_InfoFrame.place(x=50, y=50, height=500, width=600)
+        ceInfoFrame = LabelFrame(ce_InfoFrame, font=("", 15, "bold"), text="Expenses Info")
+        ceInfoFrame.grid(row=0, column=0)
+
+        scroll_y = ttk.Scrollbar(ceInfoFrame, orient=VERTICAL)
+        ce_table = ttk.Treeview(ceInfoFrame, columns=("committeeID", "committeeName",
+                                                       "totalContribution", "totalExpenditure"),
+                                yscrollcommand=scroll_y.set, height=18)
+
+        ce_table.column("#0", width=100)
+        ce_table.column("committeeID", anchor=W, width=100)
+        ce_table.column("committeeName", anchor=W, width=180)
+        ce_table.column("totalContribution", anchor=W, width=120)
+        ce_table.column("totalExpenditure", anchor=W, width=120)
+
+        ce_table.heading("committeeID", text="Committee ID")
+        ce_table.heading("committeeName", text="Committee Name")
+        ce_table.heading("totalContribution", text="Total Contribution")
+        ce_table.heading("totalExpenditure", text="Total Expenditure")
+
+        ce_table["show"] = "headings"
+
+        scroll_y.pack(side=RIGHT, fill=Y)
+        scroll_y = ttk.Scrollbar(command=ce_table.yview)
+
+        ce_table.pack(fill=BOTH, expand=1)
+
+        fetch_data()
+
+
+    def contribution_stats_window():
+        return None
+
+
+    def running_total_contribution_window():
+        return None
+
+
     # ==================== Main Other Functions Window ====================
     other_window = Toplevel(window)
     other_window.title("Other Features")
@@ -1697,6 +1772,18 @@ def other_window():
     personal_funds_button = Button(buttonFrame, text="Personal Funds", font=("",15), width=20, height=1,
                                    command=personal_funds_window)
     personal_funds_button.grid(row=4, column=0)
+
+    total_committee_expenses = Button(buttonFrame, text="Committee Expenses", font=("",15), width=20, height=1,
+                                      command=committee_expenses_window)
+    total_committee_expenses.grid(row=1, column=1)
+
+    contribution_stats = Button(buttonFrame, text="Contribution Stats", font=("",15), width=20, height=1,
+                                command=contribution_stats_window)
+    contribution_stats.grid(row=2, column=1)
+
+    running_total_contribution = Button(buttonFrame, text="Running Total Contr.", font=("", 15), width=20, height=1,
+                                        command=running_total_contribution_window)
+    running_total_contribution.grid(row=3, column=1)
 
 
 def exit_program():
