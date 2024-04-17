@@ -1461,7 +1461,7 @@ def other_window():
         CT_window = Toplevel(window)
         CT_window.title("Committee Transactions")
         CT_window.geometry("550x500")
-        Label(CT_window, font=("", 20, "bold"), text=" Committee Transactions").pack()
+        Label(CT_window, font=("", 20, "bold"), text="Committee Transactions").pack()
         CT_window.grab_set()
 
 
@@ -1496,6 +1496,7 @@ def other_window():
         CT_table.pack(fill=BOTH, expand=1)
 
         fetch_data()
+
 
     def republican_window():
         def fetch_data():
@@ -1611,6 +1612,63 @@ def other_window():
         fetch_data()
 
 
+    def personal_funds_window():
+        def fetch_data():
+            cursor.execute("""
+            SELECT DISTINCT c.CandidateID, c.CandidateName, cc.CommitteeName
+            FROM Candidate c
+            JOIN Contribution co ON c.CommitteeID = co.CommitteeID
+            JOIN Committee cc ON c.CommitteeID = cc.CommitteeID
+            WHERE c.CandidateName = co.DonorName;
+            """)
+            rows = cursor.fetchall()
+            if len(rows) != 0:
+                personal_funds_table.delete(*personal_funds_table.get_children())
+                for row in rows:
+                    personal_funds_table.insert("", END, values=row)
+                connection.commit()
+
+        def get_cursor():
+            cursor_row = personal_funds_table.focus()
+
+        personal_funds_window = Toplevel(window)
+        personal_funds_window.title("Personal Funds")
+        personal_funds_window.geometry("550x500")
+        Label(personal_funds_window, font=("", 20, "bold"), text="Personal Funds").pack()
+        personal_funds_window.grab_set()
+
+        personal_funds_frame = Frame(personal_funds_window)
+        personal_funds_frame.place(x=50, y=50, height=500, width=500)
+        personalFundsFrame = LabelFrame(personal_funds_frame, font=("", 15, "bold"), text="Personal Funds")
+        personalFundsFrame.grid(row=0, column=0)
+
+        note = Label(personal_funds_frame, font=("", 12), text="Candidates who have made contributions to their own campaign")
+        note.grid(row=1, column=0)
+
+        scroll_y = ttk.Scrollbar(personalFundsFrame, orient=VERTICAL)
+        personal_funds_table = ttk.Treeview(personalFundsFrame, columns=("candidateID", "candidateName",
+                                                                           "committeeName"),
+                                            yscrollcommand=scroll_y.set, height=18)
+
+        personal_funds_table.column("#0", width=100)
+        personal_funds_table.column("candidateID", anchor=W, width=100)
+        personal_funds_table.column("candidateName", anchor=W, width=100)
+        personal_funds_table.column("committeeName", anchor=W, width=150)
+
+        personal_funds_table.heading("candidateID", text="Candidate ID")
+        personal_funds_table.heading("candidateName", text="Candidate Name")
+        personal_funds_table.heading("committeeName", text="Committee Name")
+
+        personal_funds_table["show"] = "headings"
+
+        scroll_y.pack(side=RIGHT, fill=Y)
+        scroll_y = ttk.Scrollbar(command=personal_funds_table.yview)
+
+        personal_funds_table.pack(fill=BOTH, expand=1)
+
+        fetch_data()
+
+
     # ==================== Main Other Functions Window ====================
     other_window = Toplevel(window)
     other_window.title("Other Features")
@@ -1636,6 +1694,9 @@ def other_window():
                                command=democrat_window)
     democrat_button.grid(row=3, column=0)
 
+    personal_funds_button = Button(buttonFrame, text="Personal Funds", font=("",15), width=20, height=1,
+                                   command=personal_funds_window)
+    personal_funds_button.grid(row=4, column=0)
 
 
 def exit_program():
