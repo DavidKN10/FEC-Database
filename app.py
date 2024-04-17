@@ -1639,7 +1639,7 @@ def other_window():
 
         personal_funds_frame = Frame(personal_funds_window)
         personal_funds_frame.place(x=50, y=50, height=500, width=500)
-        personalFundsFrame = LabelFrame(personal_funds_frame, font=("", 15, "bold"), text="Personal Funds")
+        personalFundsFrame = LabelFrame(personal_funds_frame, font=("", 15, "bold"), text="Info")
         personalFundsFrame.grid(row=0, column=0)
 
         note = Label(personal_funds_frame, font=("", 12), text="Candidates who have made contributions to their own campaign")
@@ -1737,7 +1737,67 @@ def other_window():
 
 
     def contribution_stats_window():
-        return None
+        def fetch_data():
+            cursor.execute("""
+            SELECT c.CommitteeID, c.CommitteeName, 
+	            COUNT(ContributionID) AS TotalContribution,
+	            AVG(Amount) AS AverageContribution,
+	            MAX(Amount) AS MaximumContribution,
+	            MIN(Amount) AS MinimumContribution
+            FROM Committee c
+            LEFT JOIN
+	            Contribution co ON c.CommitteeID = co.CommitteeID
+            GROUP BY c.CommitteeID, c.CommitteeName;
+            """)
+            rows = cursor.fetchall()
+            if len(rows) != 0:
+                cs_table.delete(*cs_table.get_children())
+                for row in rows:
+                    cs_table.insert("", END, values=row)
+                connection.commit()
+
+        def get_cursor():
+            cursor_row = cs_table.focus()
+
+        cs_window = Toplevel(window)
+        cs_window.title("Contribution Stats")
+        cs_window.geometry("900x500")
+        Label(cs_window, font=("", 20, "bold"), text="Contribution Stats").pack()
+        cs_window.grab_set()
+
+        cs_frame = Frame(cs_window)
+        cs_frame.place(x=80, y=50, height=500, width=750)
+        csFrame = LabelFrame(cs_frame, font=("", 15, "bold"), text="Info")
+        csFrame.grid(row=0, column=0)
+
+        scroll_y = ttk.Scrollbar(csFrame, orient=VERTICAL)
+        cs_table = ttk.Treeview(csFrame, columns=("committeeID", "committeeName", "totalContribution",
+                                                  "averageContribution", "maxContribution", "minContribution"),
+                                yscrollcommand=scroll_y.set, height=18)
+
+        cs_table.column("#0", width=100)
+        cs_table.column("committeeID", anchor=W, width=100)
+        cs_table.column("committeeName", anchor=W, width=120)
+        cs_table.column("totalContribution", anchor=W, width=120)
+        cs_table.column("averageContribution", anchor=W, width=120)
+        cs_table.column("maxContribution", anchor=W, width=120)
+        cs_table.column("minContribution", anchor=W, width=120)
+
+        cs_table.heading("committeeID", text="Committee ID")
+        cs_table.heading("committeeName", text="Committee Name")
+        cs_table.heading("totalContribution", text="Total Contribution")
+        cs_table.heading("averageContribution", text="Average Contribution")
+        cs_table.heading("maxContribution", text="Max Contribution")
+        cs_table.heading("minContribution", text="Min Contribution")
+
+        cs_table["show"] = "headings"
+
+        scroll_y.pack(side=RIGHT, fill=Y)
+        scroll_y = ttk.Scrollbar(command=cs_table.yview)
+
+        cs_table.pack(fill=BOTH, expand=1)
+
+        fetch_data()
 
 
     def running_total_contribution_window():
