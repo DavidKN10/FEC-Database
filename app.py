@@ -1496,7 +1496,6 @@ def other_window():
         fetch_data()
 
 
-
     # ==================== Main Other Functions Window ====================
     other_window = Toplevel(window)
     other_window.title("Other Features")
