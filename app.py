@@ -14,7 +14,7 @@ connection = mysql.connector.connect(
 
 cursor = connection.cursor()
 # ==================== Election Window ====================
-def open_election_window():
+def election_window():
     # function to show everything in the table
     def fetch_data():
         cursor.execute("SELECT * FROM election")
@@ -237,7 +237,7 @@ def open_election_window():
 
 
 # ==================== Committee Window ====================
-def open_committee_window():
+def committee_window():
     # function to show everything in the table
     def fetch_data():
         cursor.execute("SELECT * FROM committee")
@@ -471,7 +471,7 @@ def open_committee_window():
 
 
 # ==================== Candidate Window ====================
-def open_candidate_window():
+def candidate_window():
     #function to show everything in the table
     def fetch_data():
         cursor.execute("SELECT * FROM candidate")
@@ -732,7 +732,7 @@ def open_candidate_window():
 
 
 # ==================== Contribution Window ====================
-def open_contribution_window():
+def contribution_window():
     #function to show everything in the table
     def fetch_data():
         cursor.execute("SELECT * FROM contribution")
@@ -964,7 +964,7 @@ def open_contribution_window():
 
 
 # ==================== Expenditure Window ====================
-def open_expenditure_window():
+def expenditure_window():
     # function to show everything in the table
     def fetch_data():
         cursor.execute("SELECT * FROM expenditure")
@@ -1207,7 +1207,7 @@ def open_expenditure_window():
 
 
 # ==================== Filing Window ====================
-def open_filing_window():
+def filing_window():
     #function to show everything in the table
     def fetch_data():
         cursor.execute("SELECT * FROM filing")
@@ -1379,7 +1379,7 @@ def open_filing_window():
 
         delete_window.grab_set()
 
-
+    # ==================== Main Filing Window ====================
     filing_window = Toplevel(window)
     filing_window.title("Filing Table")
     filing_window.geometry("900x500")
@@ -1388,7 +1388,7 @@ def open_filing_window():
 
     # ==================== Actions Frame ====================
     ActionFrame = Frame(filing_window)
-    ActionFrame.place(x=600, y=50, height=500, width=500)
+    ActionFrame.place(x=610, y=50, height=500, width=500)
     actionFrame = LabelFrame(ActionFrame, font=("", 15, "bold"), text="Select an action")
     actionFrame.grid(row=0, column=0)
 
@@ -1406,7 +1406,7 @@ def open_filing_window():
 
     # ==================== Table Info Frame ====================
     InfoFrame = Frame(filing_window)
-    InfoFrame.place(x=0, y=50, height=500, width=600)
+    InfoFrame.place(x=10, y=50, height=500, width=600)
     infoFrame = LabelFrame(InfoFrame, font=("", 15, "bold"), text="Filing Info")
     infoFrame.grid(row=0, column=0)
 
@@ -1438,6 +1438,82 @@ def open_filing_window():
     fetch_data()
 
 
+# ==================== Filing Window ====================
+def other_window():
+    def committee_transactions_window():
+        def fetch_data():
+            cursor.execute("""
+            SELECT CommitteeID, 'Contribution' AS TransactionType, Amount AS Amount, Date AS TransactionDate FROM Contribution
+            UNION ALL
+            SELECT CommitteeID, 'Expenditure' AS TransactionType, -Amount AS Amount, Date AS TransactionDate FROM Expenditure
+            ORDER BY CommitteeID, TransactionDate;
+            """)
+            rows = cursor.fetchall()
+            if len(rows) !=0:
+                CT_table.delete(*CT_table.get_children())
+                for row in rows:
+                    CT_table.insert("", END, values=row)
+                connection.commit()
+
+
+        CT_window = Toplevel(window)
+        CT_window.title("Committee Transactions")
+        CT_window.geometry("550x500")
+        Label(CT_window, font=("", 20, "bold"), text="Transactions").pack()
+        CT_window.grab_set()
+
+
+        CT_InfoFrame = Frame(CT_window)
+        CT_InfoFrame.place(x=60, y=50, height=500, width=500)
+        ctInfoFrame = LabelFrame(CT_InfoFrame, font=("", 15, "bold"), text="Transaction Info")
+        ctInfoFrame.grid(row=0, column=0)
+
+        note = Label(CT_InfoFrame, font=("", 13), text="Note: + amount = contribution, - amount = expenditure")
+        note.grid(row=1, column=0)
+
+        scroll_y = ttk.Scrollbar(ctInfoFrame, orient=VERTICAL)
+        CT_table = ttk.Treeview(ctInfoFrame, columns=("committeeID", "transactionType", "amount", "transactionDate"),
+                                yscrollcommand=scroll_y.set, height=18)
+
+        CT_table.column("#0", width=100)
+        CT_table.column("committeeID", anchor=CENTER, width=100)
+        CT_table.column("transactionType", anchor=CENTER, width=100)
+        CT_table.column("amount", anchor=CENTER, width=100)
+        CT_table.column("transactionDate", anchor=CENTER, width=100)
+
+        CT_table.heading("committeeID", text="Committee ID")
+        CT_table.heading("transactionType", text="Transaction Type")
+        CT_table.heading("amount", text="Amount")
+        CT_table.heading("transactionDate", text="Transaction Date")
+
+        CT_table["show"] = "headings"
+
+        scroll_y.pack(side=RIGHT, fill=Y)
+        scroll_y = ttk.Scrollbar(command=CT_table.yview)
+
+        CT_table.pack(fill=BOTH, expand=1)
+
+        fetch_data()
+
+
+
+    # ==================== Main Other Functions Window ====================
+    other_window = Toplevel(window)
+    other_window.title("Other Features")
+    other_window.geometry("900x500")
+    Label(other_window, font=("", 20, "bold"), text="Other Features").pack()
+    other_window.grab_set()
+
+    # ==================== Buttons Frame ====================
+    ButtonFrame = Frame(other_window)
+    ButtonFrame.place(x=60, y=50, height=500, width=500)
+    buttonFrame = LabelFrame(ButtonFrame, font=("", 15, "bold"), text="Select a Feature")
+    buttonFrame.grid(row=0, column=0)
+
+    committee_transactions = Button(buttonFrame, text="Committee Transactions", font=("", 15), width=20, height=1,
+                                    command= committee_transactions_window)
+    committee_transactions.grid(row=1, column=0)
+
 def exit_program():
     cursor.close()
     connection.close()
@@ -1454,33 +1530,42 @@ label_title.pack(side=TOP, fill=X)
 
 # ==================== Tables Frame ====================
 TablesFrame = Frame(window)
-TablesFrame.place(x=0, y=120, width=1280, height=400)
+TablesFrame.place(x=60, y=120, width=1280, height=400)
 tableFrame = LabelFrame(TablesFrame, font=("", 20, "bold"), text="Select a Table")
 tableFrame.grid(row=0, column=0)
 
 election_button = Button(tableFrame, text="Election", font=("", 20),
-                         width=40, height=3, command=open_election_window)
+                         width=35, height=2, command=election_window)
 election_button.grid(row=1, column=0)
+
 committee_button = Button(tableFrame, text="Committee", font=("", 20),
-                                  width=40, height=3, command=open_committee_window)
+                          width=35, height=2, command=committee_window)
 committee_button.grid(row=2, column=0)
+
 candidate_button = Button(tableFrame, text="Candidate", font=("", 20),
-                          width=40, height=3, command=open_candidate_window)
+                          width=35, height=2, command=candidate_window)
 candidate_button.grid(row=3, column=0)
+
 contribution_button = Button(tableFrame, text="Contribution", font=("", 20),
-                          width=40, height=3, command=open_contribution_window)
+                             width=35, height=2, command=contribution_window)
 contribution_button.grid(row=1, column=1)
+
 expenditure_button = Button(tableFrame, text="Expenditure", font=("", 20),
-                          width=40, height=3, command=open_expenditure_window)
+                            width=35, height=2, command=expenditure_window)
 expenditure_button.grid(row=2, column=1)
+
 filing_button = Button(tableFrame, text="Filing", font=("", 20),
-                          width=40, height=3, command=open_filing_window)
+                       width=35, height=2, command=filing_window)
 filing_button.grid(row=3, column=1)
+
+other_button = Button(tableFrame, text="Other Features", font=("", 20),
+                      width=35, height=2, command=other_window)
+other_button.grid(row=4, column=0)
 
 
 # ==================== Exit Frame ====================
 ExitFrame = Frame(window)
-ExitFrame.place(x=0, y=550, width=1280, height=400)
+ExitFrame.place(x=60, y=550, width=1280, height=400)
 exitFrame = LabelFrame(ExitFrame)
 exitFrame.grid(row=0, column=0)
 
