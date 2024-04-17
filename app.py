@@ -1455,11 +1455,13 @@ def other_window():
                     CT_table.insert("", END, values=row)
                 connection.commit()
 
+        def get_cursor():
+            cursor_row = CT_table.focus()
 
         CT_window = Toplevel(window)
         CT_window.title("Committee Transactions")
         CT_window.geometry("550x500")
-        Label(CT_window, font=("", 20, "bold"), text="Transactions").pack()
+        Label(CT_window, font=("", 20, "bold"), text=" Committee Transactions").pack()
         CT_window.grab_set()
 
 
@@ -1495,6 +1497,119 @@ def other_window():
 
         fetch_data()
 
+    def republican_window():
+        def fetch_data():
+            cursor.execute("SELECT * FROM Candidate WHERE PartyAffiliation IN ('Republican Party');")
+            rows = cursor.fetchall()
+            if len(rows) !=0:
+                candidate_table.delete(*candidate_table.get_children())
+                for row in rows:
+                    candidate_table.insert("", END, values=row)
+                connection.commit()
+
+
+        def get_cursor():
+            cursor_row = candidate_table.focus()
+
+
+        republican_window = Toplevel(window)
+        republican_window.title("Republican Candidates")
+        republican_window.geometry("900x500")
+        Label(republican_window, font=("", 20, "bold"), text="Republican Candidates").pack()
+        republican_window.grab_set()
+
+        candidate_info_frame = Frame(republican_window)
+        candidate_info_frame.place(x=60, y=50, height=700, width=800)
+        candidateInfoFrame = LabelFrame(candidate_info_frame, font=("", 15, "bold"), text="Candidate Info")
+        candidateInfoFrame.grid(row=0, column=0)
+
+        scroll_y = ttk.Scrollbar(candidateInfoFrame, orient=VERTICAL)
+        candidate_table = ttk.Treeview(candidateInfoFrame, columns=("candidateID", "candidateName", "partyAffiliation",
+                                                                    "office", "state", "committeeID", "electionID"),
+                                       yscrollcommand=scroll_y.set, height=18)
+
+        candidate_table.column("#0", width=100)
+        candidate_table.column("candidateID", anchor=W, width=100)
+        candidate_table.column("candidateName", anchor=W, width=130)
+        candidate_table.column("partyAffiliation", anchor=W, width=110)
+        candidate_table.column("office", anchor=W, width=110)
+        candidate_table.column("state", anchor=W, width=50)
+        candidate_table.column("committeeID", anchor=W, width=100)
+        candidate_table.column("electionID", anchor=W, width=100)
+        
+        candidate_table.heading("candidateID", text="Candidate ID")
+        candidate_table.heading("candidateName", text="Candidate Name")
+        candidate_table.heading("partyAffiliation", text="Party Affiliation")
+        candidate_table.heading("office", text="Office")
+        candidate_table.heading("state", text="State")
+        candidate_table.heading("committeeID", text="Committee ID")
+        candidate_table.heading("electionID", text="Election ID")
+
+        candidate_table["show"] = "headings"
+
+        scroll_y.pack(side=RIGHT, fill=Y)
+        scroll_y = ttk.Scrollbar(command=candidate_table.yview)
+
+        candidate_table.pack(fill=BOTH, expand=1)
+
+        fetch_data()
+
+
+    def democrat_window():
+        def fetch_data():
+            cursor.execute("SELECT * FROM Candidate WHERE PartyAffiliation IN ('Democratic Party');")
+            rows = cursor.fetchall()
+            if len(rows) != 0:
+                candidate_table.delete(*candidate_table.get_children())
+                for row in rows:
+                    candidate_table.insert("", END, values=row)
+                connection.commit()
+
+        def get_cursor():
+            cursor_row = candidate_table.focus()
+
+        republican_window = Toplevel(window)
+        republican_window.title("Democrat Candidates")
+        republican_window.geometry("900x500")
+        Label(republican_window, font=("", 20, "bold"), text="Democrat Candidates").pack()
+        republican_window.grab_set()
+
+        candidate_info_frame = Frame(republican_window)
+        candidate_info_frame.place(x=60, y=50, height=700, width=800)
+        candidateInfoFrame = LabelFrame(candidate_info_frame, font=("", 15, "bold"), text="Candidate Info")
+        candidateInfoFrame.grid(row=0, column=0)
+
+        scroll_y = ttk.Scrollbar(candidateInfoFrame, orient=VERTICAL)
+        candidate_table = ttk.Treeview(candidateInfoFrame, columns=("candidateID", "candidateName", "partyAffiliation",
+                                                                    "office", "state", "committeeID", "electionID"),
+                                       yscrollcommand=scroll_y.set, height=18)
+
+        candidate_table.column("#0", width=100)
+        candidate_table.column("candidateID", anchor=W, width=100)
+        candidate_table.column("candidateName", anchor=W, width=130)
+        candidate_table.column("partyAffiliation", anchor=W, width=110)
+        candidate_table.column("office", anchor=W, width=110)
+        candidate_table.column("state", anchor=W, width=50)
+        candidate_table.column("committeeID", anchor=W, width=100)
+        candidate_table.column("electionID", anchor=W, width=100)
+
+        candidate_table.heading("candidateID", text="Candidate ID")
+        candidate_table.heading("candidateName", text="Candidate Name")
+        candidate_table.heading("partyAffiliation", text="Party Affiliation")
+        candidate_table.heading("office", text="Office")
+        candidate_table.heading("state", text="State")
+        candidate_table.heading("committeeID", text="Committee ID")
+        candidate_table.heading("electionID", text="Election ID")
+
+        candidate_table["show"] = "headings"
+
+        scroll_y.pack(side=RIGHT, fill=Y)
+        scroll_y = ttk.Scrollbar(command=candidate_table.yview)
+
+        candidate_table.pack(fill=BOTH, expand=1)
+
+        fetch_data()
+
 
     # ==================== Main Other Functions Window ====================
     other_window = Toplevel(window)
@@ -1512,6 +1627,16 @@ def other_window():
     committee_transactions = Button(buttonFrame, text="Committee Transactions", font=("", 15), width=20, height=1,
                                     command= committee_transactions_window)
     committee_transactions.grid(row=1, column=0)
+
+    republican_button = Button(buttonFrame, text="Republican Candidates", font=("",15), width=20, height=1,
+                               command=republican_window)
+    republican_button.grid(row=2, column=0)
+
+    democrat_button = Button(buttonFrame, text="Democrat Candidates", font=("",15), width=20, height=1,
+                               command=democrat_window)
+    democrat_button.grid(row=3, column=0)
+
+
 
 def exit_program():
     cursor.close()
