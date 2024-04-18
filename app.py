@@ -1801,7 +1801,57 @@ def other_window():
 
 
     def running_total_contribution_window():
-        return None
+        def fetch_data():
+            cursor.execute("""
+            SELECT CommitteeID, Date, Amount, 
+	            SUM(Amount) OVER (PARTITION BY CommitteeID ORDER BY Date) AS RunningTotal
+            FROM Contribution;
+            """)
+            rows = cursor.fetchall()
+            if len(rows) != 0:
+                rtc_table.delete(*rtc_table.get_children())
+                for row in rows:
+                    rtc_table.insert("", END, values=row)
+                connection.commit()
+
+        def get_cursor():
+            cursor_row = rtc_table.focus()
+
+        rtc_window = Toplevel(window)
+        rtc_window.title("Running Total Contributions")
+        rtc_window.geometry("650x500")
+        Label(rtc_window, font=("", 20, "bold"), text="Running Total Contributions").pack()
+        rtc_window.grab_set()
+
+        rtc_InfoFrame = Frame(rtc_window)
+        rtc_InfoFrame.place(x=50, y=50, height=500, width=600)
+        rtcInfoFrame = LabelFrame(rtc_InfoFrame, font=("", 15, "bold"), text="Contribution Info")
+        rtcInfoFrame.grid(row=0, column=0)
+
+        scroll_y = ttk.Scrollbar(rtcInfoFrame, orient=VERTICAL)
+        rtc_table = ttk.Treeview(rtcInfoFrame, columns=("committeeID", "date",
+                                                        "amount", "runningTotal"),
+                                 yscrollcommand=scroll_y.set, height=18)
+
+        rtc_table.column("#0", width=100)
+        rtc_table.column("committeeID", anchor=W, width=100)
+        rtc_table.column("date", anchor=CENTER, width=180)
+        rtc_table.column("amount", anchor=W, width=120)
+        rtc_table.column("runningTotal", anchor=W, width=120)
+
+        rtc_table.heading("committeeID", text="Committee ID")
+        rtc_table.heading("date", text="Date")
+        rtc_table.heading("amount", text="Amount")
+        rtc_table.heading("runningTotal", text="Running Total")
+
+        rtc_table["show"] = "headings"
+
+        scroll_y.pack(side=RIGHT, fill=Y)
+        scroll_y = ttk.Scrollbar(command=rtc_table.yview)
+
+        rtc_table.pack(fill=BOTH, expand=1)
+
+        fetch_data()
 
 
     # ==================== Main Other Functions Window ====================
