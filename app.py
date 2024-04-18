@@ -1863,35 +1863,35 @@ def other_window():
 
     # ==================== Buttons Frame ====================
     ButtonFrame = Frame(other_window)
-    ButtonFrame.place(x=60, y=50, height=500, width=500)
+    ButtonFrame.place(x=150, y=50, height=500, width=700)
     buttonFrame = LabelFrame(ButtonFrame, font=("", 15, "bold"), text="Select a Feature")
     buttonFrame.grid(row=0, column=0)
 
-    committee_transactions = Button(buttonFrame, text="Committee Transactions", font=("", 15), width=20, height=1,
+    committee_transactions = Button(buttonFrame, text="Committee Transactions", font=("", 15), width=25, height=1,
                                     command= committee_transactions_window)
     committee_transactions.grid(row=1, column=0)
 
-    republican_button = Button(buttonFrame, text="Republican Candidates", font=("",15), width=20, height=1,
+    republican_button = Button(buttonFrame, text="Republican Candidates", font=("",15), width=25, height=1,
                                command=republican_window)
     republican_button.grid(row=2, column=0)
 
-    democrat_button = Button(buttonFrame, text="Democrat Candidates", font=("",15), width=20, height=1,
+    democrat_button = Button(buttonFrame, text="Democrat Candidates", font=("",15), width=25, height=1,
                                command=democrat_window)
     democrat_button.grid(row=3, column=0)
 
-    personal_funds_button = Button(buttonFrame, text="Personal Funds", font=("",15), width=20, height=1,
+    personal_funds_button = Button(buttonFrame, text="Personal Funds", font=("",15), width=25, height=1,
                                    command=personal_funds_window)
     personal_funds_button.grid(row=4, column=0)
 
-    total_committee_expenses = Button(buttonFrame, text="Committee Expenses", font=("",15), width=20, height=1,
+    total_committee_expenses = Button(buttonFrame, text="Committee Expenses", font=("",15), width=25, height=1,
                                       command=committee_expenses_window)
     total_committee_expenses.grid(row=1, column=1)
 
-    contribution_stats = Button(buttonFrame, text="Contribution Stats", font=("",15), width=20, height=1,
+    contribution_stats = Button(buttonFrame, text="Contribution Stats", font=("",15), width=25, height=1,
                                 command=contribution_stats_window)
     contribution_stats.grid(row=2, column=1)
 
-    running_total_contribution = Button(buttonFrame, text="Running Total Contr.", font=("", 15), width=20, height=1,
+    running_total_contribution = Button(buttonFrame, text="Running Total Contr.", font=("", 15), width=25, height=1,
                                         command=running_total_contribution_window)
     running_total_contribution.grid(row=3, column=1)
 
